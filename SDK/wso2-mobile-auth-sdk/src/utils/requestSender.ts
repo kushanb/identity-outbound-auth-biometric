@@ -4,7 +4,9 @@ import { Alert } from 'react-native';
 
 export class RequestSender { 
 
-    public static sendRequest(url: string, requestMethod: any, requestHeaders: any, body: any) { 
+    public constructor() { }
+
+    public sendRequest(url: string, requestMethod: any, requestHeaders: any, body: any) { 
         fetch(url, {
             method: requestMethod,
             disableAllSecurity: true,
@@ -14,7 +16,7 @@ export class RequestSender {
             headers: requestHeaders,
             body: body,
             })
-            .then((response: { bodyString: string; status: number; }) => {
+            .then(response => {
             console.log(`response received ${response.bodyString}`)
             Alert.alert(
             "Request",
@@ -27,7 +29,7 @@ export class RequestSender {
 
         })
         .catch(err => {
-            console.log(`error: ${err}`)
+            console.log(`error: ${err.status}`)
         });
     }
 }
