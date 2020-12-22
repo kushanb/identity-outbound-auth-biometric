@@ -4,10 +4,10 @@
 export interface DiscoveryDataInterface {
     id: string;
     username: string;
-    tenantDomain: string;
-    userstoreDomain: string;
-    registrationURL: string;
-    authenticationURL: string;
-    challenege: string;
+    tenantDomain?: string;
+    userstoreDomain?: string;
+    registrationUrl: string;
+    authenticationUrl: string;
+    challenge: string;
   }
   
