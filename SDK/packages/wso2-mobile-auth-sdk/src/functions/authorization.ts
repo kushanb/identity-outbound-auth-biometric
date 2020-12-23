@@ -4,6 +4,25 @@ import { Alert } from "react-native";
 import { Crypto } from "../utils/crypto";
 import { RequestSender } from "../utils/requestSender";
 
+import AsyncStorage from "@react-native-community/async-storage";
+
+let privateKey: string;
+
+const getData = async () => {
+  try {
+    const value = await AsyncStorage.getItem("privateKey");
+    if (value !== null) {
+      // value previously stored
+      privateKey = value;
+    }
+  } catch (e) {
+    // error reading value
+    console.log("No private key available");
+  }
+};
+
+getData();
+
 export class Authorization {
   /**
    * Constructor for the authorization class
@@ -32,23 +51,7 @@ export class Authorization {
           request.data.sessionDataKey +
           "&challenge=" +
           request.data.challenge,
-        privateKey:
-          "-----BEGIN PRIVATE KEY-----\r\n" +
-          "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKpWmCmqfcwIre4l\r\n" +
-          "7Mth5I2JwOuQ7QSvYjTT5dVMcuEmkAhu3VT+Z4ubUx9ISi2H2xsRnapMDaDTCN7y\r\n" +
-          "0EerUgA3iPaW4s2UUlidndfrUyN55EKBx80Sn7721GwuE4OVH4Ei9d3QXIhbaao0\r\n" +
-          "ny3wTcmA6Ug+xm34nrr8pzkiMxzFAgMBAAECgYBmV8D0x8rtXAmknIS5bge0Qp/2\r\n" +
-          "6Qx/VCDdPLNKhLRBMro3VuUEvBXae2hl0zk+QfITQXJJb4iAqEscKSea6ARLvrQE\r\n" +
-          "ZqRgcUKsReYjNY81U/dgoCoDrBFLB2BL1rEGwzBk+GwWLIKYe9En9lZU8xe5f8aC\r\n" +
-          "WJbbCLC98vjxU20wAQJBAPZZ3E+X+8QXz8+ENhp8bBM7RQPLmS+lOmP2a8WRKWfn\r\n" +
-          "OLRali5u5fOuQ6HJ0C8yCoXRRmaaPmwymjOCcO0of8ECQQCxAo+L/oZcORgXu4lL\r\n" +
-          "XKB+0JfQGA5LfTp0ALlrVpNB+lYbEcVXFDHCRe8188WB/Po5nIS1/knD5Nr2WUkd\r\n" +
-          "cB4FAkEAz17fPETkkrG0patWW79Gvn2S39n/zgKY/1KMb9d88lDKA8+JQfbqLNER\r\n" +
-          "b1xRmZjXEMQULgRC7ZM/CIMSCiCgQQJBAIMjO4fizFX8sn26oW+ksv7guOghOk3w\r\n" +
-          "++I/Ox9rp3NE7I/nbYUi3+5m817MN/IiopsV+zf9qVao8RN7eHCHxKUCQCSMect/\r\n" +
-          "lRBoBm0GioqihmoQmFcUewpYryMCTmu9S/nq2QUj4xNUHuMU+ZSjqYpmffcp3iVS\r\n" +
-          "M+ixVx2iE3n25B0=\r\n" +
-          "-----END PRIVATE KEY-----",
+        privateKey: privateKey,
         connectionCode: (
           request.data.sessionDataKey.substring(0, 4) +
           " - " +

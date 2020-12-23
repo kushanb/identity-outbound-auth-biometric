@@ -3,9 +3,33 @@ import { AccountsInterface } from "../models/accounts";
 import { DiscoveryDataInterface } from "../models/discoveryData";
 import { DeviceInformation } from "../utils/deviceInformation";
 import { Crypto } from "../utils/crypto";
-import { fetch } from "react-native-ssl-pinning";
+// import { fetch } from "react-native-ssl-pinning";
 import uuid from "uuid-random";
 import { RequestSender } from "../utils/requestSender";
+import AsyncStorage from "@react-native-community/async-storage";
+
+let asyncPriv: string;
+let asyncId: string;
+
+const getData = async () => {
+  try {
+    const value = await AsyncStorage.getItem("privateKey");
+    if (value !== null) {
+      // value previously stored
+      asyncPriv = value;
+    }
+    const value2 = await AsyncStorage.getItem("deviceId");
+    if (value !== null) {
+      // value previously stored
+      asyncId = value2;
+    }
+  } catch (e) {
+    // error reading value
+    console.log("No private key available");
+  }
+};
+
+getData();
 
 /**
  * Class for all the functionality related to accounts
@@ -23,6 +47,22 @@ export class Accounts {
     }
   }
 
+  storeData = async (privKey: string) => {
+    try {
+      await AsyncStorage.setItem("privateKey", privKey);
+    } catch (e) {
+      console.log("Async storage error: " + e);
+    }
+  };
+
+  storeData1 = async (deviceId: string) => {
+    try {
+      await AsyncStorage.setItem("deviceId", deviceId);
+    } catch (e) {
+      console.log("Async storage error: " + e);
+    }
+  };
+
   /*
    * API functions
    */
@@ -32,7 +72,7 @@ export class Accounts {
    *
    * @param regRequest body of the scanned QR code
    */
-  public addAccount(regRequest: any) {
+  public addAccount(regRequest: any, fcmToken: string) {
     console.log("Add Account function");
     let discoveryData = this.processDiscoveryData(regRequest);
     console.log("Discovery Data Processed");
@@ -44,12 +84,20 @@ export class Accounts {
       regRequest.challenge
     );
 
+    // Store data for later use
+    this.storeData(keypair.prvKey);
+    this.storeData1(discoveryData.id);
+
+    let modPubKey: string = keypair.pubKey
+      .replace("-----BEGIN PUBLIC KEY-----", "")
+      .replace("-----END PUBLIC KEY-----", "")
+      .replace(/(\r\n|\n|\r)/gm, "");
+
     let request: RegistrationRequestInterface;
     request = {
       id: discoveryData.id,
-      pushID:
-        "fQrUKjM_TyWc2w4QrK8vyB:APA91bFsNHubZZJJnhrxD_VGz0zVnepwfL1PTxxOzPGu-qk6g3qbgfbNT8AsXBjPlrt3Rpc5OF94wnIJs2Iu_AksVNs4Ii8qMhOVETeBE3EEMfz3_Ou0Y2bJ5gyTboIpSI3e5Ugd98WX",
-      publicKey: keypair.pubKey,
+      pushID: fcmToken,
+      publicKey: modPubKey,
       signature: signedChallenege,
     };
 
@@ -67,11 +115,11 @@ export class Accounts {
 
     console.log("Request Body:", JSON.stringify(regRequestBody));
 
-    try {
-      this.sendEnrolementRequest(regRequestBody);
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   this.sendEnrolementRequest(regRequestBody);
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     let requestMethod = "POST";
 
@@ -98,13 +146,13 @@ export class Accounts {
     console.log("Remove account function");
     // TODO: Complete the body
     let challenge = uuid();
-    let signature = Crypto.signChallenge(privateKey, challenge);
+    let signature = Crypto.signChallenge(asyncPriv, challenge);
 
     console.log("Remove Account Challenge: " + challenge);
     console.log("Remove Account Sig: " + signature);
 
     let delRequestBody: any = {
-      deviceId: accountID,
+      deviceId: asyncId,
       ACTION: "DELETE",
       signature: signature,
       challenge: challenge,
@@ -172,15 +220,15 @@ export class Accounts {
     if (
       regRequest.id &&
       regRequest.username &&
-      regRequest.registrationURL &&
-      regRequest.authenticationURL &&
+      regRequest.registrationUrl &&
+      regRequest.authenticationUrl &&
       regRequest.challenge
     ) {
       discoveryData = {
         id: regRequest.id,
         username: regRequest.username,
-        registrationUrl: regRequest.registrationURL,
-        authenticationUrl: regRequest.authenticationURL,
+        registrationUrl: regRequest.registrationUrl,
+        authenticationUrl: regRequest.authenticationUrl,
         challenge: regRequest.challenge,
       };
     } else {
@@ -204,32 +252,32 @@ export class Accounts {
    *
    * @param request contains the parameters sent to the IS
    */
-  private sendEnrolementRequest(request: any) {
-    // TODO: change to url from discovery data
-    console.log("Send enrolement request function");
+  // private sendEnrolementRequest(request: any) {
+  //   // TODO: change to url from discovery data
+  //   console.log("Send enrolement request function");
 
-    fetch(
-      "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/biometricdevice",
-      {
-        method: "POST",
-        disableAllSecurity: true,
-        sslPinning: {
-          certs: ["wso2carbon"],
-        },
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(request),
-      }
-    )
-      .then((response) => {
-        console.log(`response received ${response}`);
-      })
-      .catch((err) => {
-        console.log(`error: ${err}`);
-      });
-  }
+  //   fetch(
+  //     "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/biometricdevice",
+  //     {
+  //       method: "POST",
+  //       disableAllSecurity: true,
+  //       sslPinning: {
+  //         certs: ["wso2carbon"],
+  //       },
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(request),
+  //     }
+  //   )
+  //     .then((response) => {
+  //       console.log(`response received ${response}`);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`error: ${err}`);
+  //     });
+  // }
 }
 
 // TODO: identify how to send the data to be saved on the device to the user

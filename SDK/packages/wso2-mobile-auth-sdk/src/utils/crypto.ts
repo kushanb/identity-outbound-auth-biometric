@@ -36,20 +36,19 @@
 //   }
 // }
 
-import {hextob64, KEYUTIL, KJUR} from 'jsrsasign';
+import { hextob64, KEYUTIL, KJUR } from "jsrsasign";
 
 export class Crypto {
-
   /**
    * Generate new keypair
-   * 
+   *
    * @returns the generated keypair object containing PEM strings
    */
   public static generateKeypair(): any {
-    let keyPair = KEYUTIL.generateKeypair('RSA', 2048);
+    let keyPair = KEYUTIL.generateKeypair("RSA", 1024);
     return {
       pubKey: KEYUTIL.getPEM(keyPair.pubKeyObj),
-      prvKey: KEYUTIL.getPEM(keyPair.prvKeyObj, 'PKCS8PRV'),
+      prvKey: KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS8PRV"),
     };
   }
 
@@ -58,23 +57,21 @@ export class Crypto {
    *
    * @param prvKey private key to sign the challenge
    * @param challenege string containing the challenge
-   * 
+   *
    * @returns a base64 string of the signed challenege
    */
   public static signChallenge(privateKey: string, challenge: string): string {
     try {
       let prvKey = KEYUTIL.getKey(privateKey);
       console.log("Prvkey:" + privateKey);
-      let sig: any = new KJUR.crypto.Signature({alg: 'SHA256withRSA'});
+      let sig: any = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
       sig.init(prvKey);
       // sig.updateString(challenge);
       let signature = sig.signString(challenge);
       return hextob64(signature);
     } catch (err) {
-      console.log('Sign Falied: ' + err);
+      console.log("Sign Falied: " + err);
     }
     return "";
-
-    
   }
 }
