@@ -28,11 +28,12 @@ import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
 import AddAccountSuccessScreen from './src/screens/AddAccountSuccessScreen';
 import AddAccountFailedScreen from './src/screens/AddAccountFailedScreen';
+import AuthFailedScreen from './src/screens/AuthFailedScreen';
 
 const App: () => React$Node = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" />
       <SafeAreaView>
         {/* <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
@@ -45,7 +46,8 @@ const App: () => React$Node = () => {
         {/* <StartScreen /> */}
         {/* <AddAccountScreen /> */}
         {/* <AddAccountSuccessScreen /> */}
-        <AddAccountFailedScreen />
+        {/* <AddAccountFailedScreen /> */}
+        <AuthFailedScreen />
       </SafeAreaView>
     </>
   );

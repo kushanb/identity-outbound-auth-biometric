@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
-import LargeButton from '../components/Button';
+import {LargeButton} from '../components/Button';
 
 const AddAccountScreen = () => (
   <View>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     marginVertical: 10,
-    marginHorizontal: '20%',
+    marginHorizontal: '10%',
   },
   container: {
     marginVertical: '40%',
@@ -81,13 +81,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     padding: '10%',
+    elevation: 20,
   },
   titleView: {
     marginTop: '5%',
   },
   button: {
     top: '-35%',
-    paddingHorizontal: '20%',
+    paddingHorizontal: '10%',
   },
   addAccImage: {
     alignSelf: 'center',

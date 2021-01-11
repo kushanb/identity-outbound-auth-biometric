@@ -15,18 +15,30 @@ export const LineButton = ({title}) => (
   </TouchableOpacity>
 );
 
+export const WhiteButton = ({title}) => (
+  <TouchableOpacity style={styles.whiteButtonContainer} activeOpacity={0.8}>
+    <Text style={styles.whiteButtonText}>{title}</Text>
+  </TouchableOpacity>
+);
+
 const styles = StyleSheet.create({
   largeButtonContainer: {
-    elevation: 4,
+    elevation: 0,
     backgroundColor: '#FD7308',
     borderRadius: 30,
     margin: 10,
   },
   lineButtonContainer: {
-    elevation: 4,
+    elevation: 0,
     backgroundColor: '#FFF',
     borderWidth: 4,
     borderColor: '#FD7308',
+    borderRadius: 30,
+    margin: 10,
+  },
+  whiteButtonContainer: {
+    elevation: 0,
+    backgroundColor: '#FFF',
     borderRadius: 30,
     margin: 10,
   },
@@ -42,6 +54,15 @@ const styles = StyleSheet.create({
   lineButtonText: {
     fontSize: 18,
     color: '#FD7308',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    textTransform: 'uppercase',
+    paddingVertical: 15,
+    paddingHorizontal: 25,
+  },
+  whiteButtonText: {
+    fontSize: 18,
+    color: '#585858',
     fontWeight: 'bold',
     alignSelf: 'center',
     textTransform: 'uppercase',

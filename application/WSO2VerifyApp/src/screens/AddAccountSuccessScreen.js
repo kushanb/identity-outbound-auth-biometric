@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     marginVertical: 10,
-    marginHorizontal: '30%',
+    marginHorizontal: '25%',
     bottom: '-35%',
   },
   logo: {

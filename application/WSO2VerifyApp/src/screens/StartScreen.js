@@ -1,7 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
-import LargeButton from '../components/Button';
-import LineButton from '../components/Button';
+import {LargeButton} from '../components/Button';
 
 const StartScreen = () => (
   <View>
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
   },
   button: {
     top: '90%',
-    paddingHorizontal: '30%',
+    paddingHorizontal: '25%',
   },
 });
 
