@@ -26,6 +26,8 @@ import {
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
+import AddAccountSuccessScreen from './src/screens/AddAccountSuccessScreen';
+import AddAccountFailedScreen from './src/screens/AddAccountFailedScreen';
 
 const App: () => React$Node = () => {
   return (
@@ -41,7 +43,9 @@ const App: () => React$Node = () => {
           </Stack.Navigator>
         </NavigationContainer> */}
         {/* <StartScreen /> */}
-        <AddAccountScreen />
+        {/* <AddAccountScreen /> */}
+        {/* <AddAccountSuccessScreen /> */}
+        <AddAccountFailedScreen />
       </SafeAreaView>
     </>
   );

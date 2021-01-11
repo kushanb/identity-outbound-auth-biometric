@@ -1,27 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import LargeButton from '../components/Button';
-import Svg, {
-  Circle,
-  Ellipse,
-  G,
-  TSpan,
-  TextPath,
-  Path,
-  Polygon,
-  Polyline,
-  Line,
-  Rect,
-  Use,
-  Symbol,
-  Defs,
-  LinearGradient,
-  RadialGradient,
-  Stop,
-  ClipPath,
-  Pattern,
-  Mask,
-} from 'react-native-svg';
 
 const AddAccountScreen = () => (
   <View>
