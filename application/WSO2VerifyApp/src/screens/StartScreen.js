@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, Button, Text, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet} from 'react-native';
 import LargeButton from '../components/Button';
 
 const StartScreen = () => (

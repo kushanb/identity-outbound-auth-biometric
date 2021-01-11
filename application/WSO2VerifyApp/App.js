@@ -25,6 +25,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import StartScreen from './src/screens/StartScreen';
+import AddAccountScreen from './src/screens/AddAccountScreen';
 
 const App: () => React$Node = () => {
   return (
@@ -39,7 +40,8 @@ const App: () => React$Node = () => {
             <Stack.Screen name="Authorization Request" component={AuthScreen} />
           </Stack.Navigator>
         </NavigationContainer> */}
-        <StartScreen />
+        {/* <StartScreen /> */}
+        <AddAccountScreen />
       </SafeAreaView>
     </>
   );

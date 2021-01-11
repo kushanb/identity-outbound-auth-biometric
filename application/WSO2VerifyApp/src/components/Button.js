@@ -1,12 +1,5 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Text,
-} from 'react-native';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 // [press, setPress] = useState(0);
 
