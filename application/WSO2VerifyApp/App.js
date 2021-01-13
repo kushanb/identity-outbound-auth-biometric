@@ -30,6 +30,7 @@ import AddAccountSuccessScreen from './src/screens/AddAccountSuccessScreen';
 import AddAccountFailedScreen from './src/screens/AddAccountFailedScreen';
 import AuthFailedScreen from './src/screens/AuthFailedScreen';
 import AccountsScreen from './src/screens/AccountsScreen';
+import AuthRequestScreen from './src/screens/AuthRequestScreen';
 
 const App: () => React$Node = () => {
   return (
@@ -49,7 +50,8 @@ const App: () => React$Node = () => {
         {/* <AddAccountSuccessScreen /> */}
         {/* <AddAccountFailedScreen /> */}
         {/* <AuthFailedScreen /> */}
-        <AccountsScreen />
+        {/* <AccountsScreen /> */}
+        <AuthRequestScreen />
       </SafeAreaView>
     </>
   );
