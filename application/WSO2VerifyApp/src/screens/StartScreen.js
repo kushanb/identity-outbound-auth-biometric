@@ -56,8 +56,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    fontWeight: '300',
-    fontFamily: 'Helvetica',
+    // fontWeight: '300',
+    fontFamily: 'Roboto-Light',
     textAlign: 'center',
   },
   introText: {

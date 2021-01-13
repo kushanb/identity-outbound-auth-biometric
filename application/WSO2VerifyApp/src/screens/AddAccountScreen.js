@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: '300',
-    fontFamily: 'Helvetica',
+    fontFamily: 'Roboto-Light',
     textAlign: 'center',
   },
   mainCardView: {
