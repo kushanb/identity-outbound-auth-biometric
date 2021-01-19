@@ -23,6 +23,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import {NavigationContainer} from '@react-navigation/native';
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
@@ -31,19 +32,22 @@ import AddAccountFailedScreen from './src/screens/AddAccountFailedScreen';
 import AuthFailedScreen from './src/screens/AuthFailedScreen';
 import AccountsScreen from './src/screens/AccountsScreen';
 import AuthRequestScreen from './src/screens/AuthRequestScreen';
+import ActivityScreen from './src/screens/ActivityScreen';
+// import TabViewExample from './src/screens/TabScreenTest';
 
 const App: () => React$Node = () => {
   return (
     <>
       <StatusBar barStyle="default" />
       <SafeAreaView>
-        {/* <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
+        {/* <NavigationContainer> */}
+        {/* <Stack.Navigator initialRouteName="Home">
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="QRScreen" component={ScanScreen} />
             <Stack.Screen name="Authorization Request" component={AuthScreen} />
-          </Stack.Navigator>
+          </Stack.Navigator> */}
+        {/* <TabViewExample />
         </NavigationContainer> */}
         {/* <StartScreen /> */}
         {/* <AddAccountScreen /> */}
@@ -51,7 +55,9 @@ const App: () => React$Node = () => {
         {/* <AddAccountFailedScreen /> */}
         {/* <AuthFailedScreen /> */}
         {/* <AccountsScreen /> */}
-        <AuthRequestScreen />
+        {/* <AuthRequestScreen /> */}
+        <ActivityScreen />
+        {/* <TabViewExample /> */}
       </SafeAreaView>
     </>
   );
