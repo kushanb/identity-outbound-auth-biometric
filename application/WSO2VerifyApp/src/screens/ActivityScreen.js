@@ -47,7 +47,7 @@ const data = [
 ];
 
 const ActivityScreen = () => {
-  const [selectedMenu, setSelectedMenu] = useState(0);
+  const [selectedMenu, setSelectedMenu] = useState('Accepted');
   // const [filteredData, setFilteredData] = useState(0);
 
   const filterData = () => {
