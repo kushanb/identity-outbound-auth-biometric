@@ -10,6 +10,11 @@ import {
 import AccountCard from '../components/AccountCard';
 import BottomNavigation from '../components/BottomNavigation';
 
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
 const data = [
   {
     accountId: 1,
@@ -42,18 +47,23 @@ const AccountsScreen = () => {
   const renderItem = ({item}) => <AccountCard account={item} />;
 
   return (
-    <View>
+    <View
+      style={{
+        flexDirection: 'column',
+        height: hp('97%'),
+        justifyContent: 'center',
+        marginTop: '3%',
+      }}>
       <View style={styles.logoView}>
         <Image
           source={require('../assets/img/wso2logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.logoText}>Verify</Text>
       </View>
       <View style={styles.titleView}>
         <Text style={styles.title}>Accounts</Text>
       </View>
-      <View>
+      <View style={{flex: 13, flexDirection: 'column'}}>
         <FlatList
           data={data}
           renderItem={renderItem}
@@ -90,7 +100,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {
@@ -102,7 +112,7 @@ const styles = StyleSheet.create({
     left: 20,
   },
   logoView: {
-    marginTop: '5%',
+    flex: 3,
   },
   title: {
     fontSize: 36,
@@ -124,8 +134,7 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   titleView: {
-    marginTop: '5%',
-    marginBottom: '10%',
+    flex: 2,
   },
   button: {
     top: '-35%',
@@ -141,8 +150,9 @@ const styles = StyleSheet.create({
     top: '-15%',
   },
   addButton: {
-    alignSelf: 'flex-end',
-    marginRight: '5%',
+    position: 'absolute',
+    bottom: hp('10%'),
+    right: wp('5%'),
   },
   accountsList: {
     height: '58.5%',

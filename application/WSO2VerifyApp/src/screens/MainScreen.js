@@ -21,14 +21,14 @@ const MainScreen = () => {
             return (
               <Image
                 source={require('../assets/img/user-profile.png')}
-                style={{tintColor: focused ? '#FD7308' : '#000'}}
+                style={{tintColor: focused ? '#FD7308' : '#363636'}}
               />
             );
           } else if (route.name === 'Activity') {
             return (
               <Image
                 source={require('../assets/img/material-history.png')}
-                style={{tintColor: focused ? '#FD7308' : '#000'}}
+                style={{tintColor: focused ? '#FD7308' : '#363636'}}
               />
             );
           }
@@ -36,7 +36,7 @@ const MainScreen = () => {
       })}
       tabBarOptions={{
         activeTintColor: '#FD7308',
-        inactiveTintColor: 'gray',
+        inactiveTintColor: '#363636',
         labelStyle: {
           fontSize: 12,
           fontFamily: 'Roboto-Medium',

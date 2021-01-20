@@ -10,13 +10,13 @@ const ActivityCard = ({account}) => {
     <View style={styles.cardView}>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Name{'\t\t'}:{'\t'}
+          Name{'\t\t\t'}:{'\t'}
         </Text>{' '}
         {account.displayName ? account.displayName : 'N/A'}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Username{'\t'}:{'\t'}
+          Username{'\t\t'}:{'\t'}
         </Text>{' '}
         {account.username ? account.username : 'N/A'}
       </Text>
@@ -28,19 +28,19 @@ const ActivityCard = ({account}) => {
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Application{'\t'}:{'\t'}
+          Application{'\t\t'}:{'\t'}
         </Text>{' '}
         {account.application ? account.application : 'N/A'}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Device{'\t\t'}:{'\t'}
+          Device{'\t\t\t'}:{'\t'}
         </Text>{' '}
         {account.device ? account.device : 'N/A'}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Time{'\t\t'}:{'\t'}
+          Time{'\t\t\t'}:{'\t'}
         </Text>{' '}
         {account.time ? account.time : 'N/A'}
       </Text>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     color: '#7C7C7C',
   },
   textCardContent: {
-    fontSize: hp('2.2%'),
+    fontSize: hp('1.8%'),
     fontFamily: 'Roboto-Regular',
     marginVertical: 5,
   },

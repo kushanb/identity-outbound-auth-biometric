@@ -28,6 +28,7 @@ const data = [
     displayName: 'Blue Hudsen',
     organization: 'WSO2',
     status: 'Accepted',
+    time: 'Today | 3.30 p.m.',
   },
   {
     accountId: 3,
@@ -82,7 +83,6 @@ const ActivityScreen = () => {
           source={require('../assets/img/wso2logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.logoText}>Verify</Text>
       </View>
       <View style={styles.titleView}>
         <Text style={styles.title}>Activity</Text>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {
