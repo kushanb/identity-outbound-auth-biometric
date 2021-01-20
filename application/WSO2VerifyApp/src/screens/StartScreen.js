@@ -2,14 +2,13 @@ import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import {LargeButton} from '../components/Button';
 
-const StartScreen = () => (
+const StartScreen = ({navigation}) => (
   <View>
     <View style={styles.logoView}>
       <Image
         source={require('../assets/img/wso2logo.png')}
         style={styles.logo}
       />
-      <Text style={styles.logoText}>Verify</Text>
     </View>
     <View style={styles.titleView}>
       <Text style={styles.title}>Get Started</Text>
@@ -19,7 +18,10 @@ const StartScreen = () => (
       </Text>
     </View>
     <View style={styles.button}>
-      <LargeButton title="Start" />
+      <LargeButton
+        title="Start"
+        action={() => navigation.navigate('Add Account')}
+      />
     </View>
   </View>
 );
@@ -40,7 +42,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {

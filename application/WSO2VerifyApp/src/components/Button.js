@@ -3,8 +3,11 @@ import {StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 // [press, setPress] = useState(0);
 
-export const LargeButton = ({title}) => (
-  <TouchableOpacity style={styles.largeButtonContainer} activeOpacity={0.8}>
+export const LargeButton = ({title, action}) => (
+  <TouchableOpacity
+    style={styles.largeButtonContainer}
+    activeOpacity={0.8}
+    onPress={action}>
     <Text style={styles.largeButtonText}>{title}</Text>
   </TouchableOpacity>
 );

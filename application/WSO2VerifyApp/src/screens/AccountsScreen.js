@@ -43,7 +43,7 @@ const data = [
   },
 ];
 
-const AccountsScreen = () => {
+const AccountsScreen = ({navigation}) => {
   const renderItem = ({item}) => <AccountCard account={item} />;
 
   return (
@@ -71,7 +71,9 @@ const AccountsScreen = () => {
           style={styles.accountsList}
         />
       </View>
-      <TouchableOpacity activeOpacity={0.7}>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => navigation.navigate('Add Account')}>
         <Image
           source={require('../assets/img/add-button.png')}
           style={styles.addButton}
@@ -155,7 +157,7 @@ const styles = StyleSheet.create({
     right: wp('5%'),
   },
   accountsList: {
-    height: '58.5%',
+    flexGrow: 1,
   },
 });
 

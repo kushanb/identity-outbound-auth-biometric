@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     paddingVertical: '2%',
     marginVertical: '5%',
     borderRadius: 20,
+    flex: 1,
   },
   textOrganization: {
     fontSize: 14,

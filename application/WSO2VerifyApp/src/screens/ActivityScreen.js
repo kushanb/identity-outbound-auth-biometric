@@ -205,6 +205,9 @@ const styles = StyleSheet.create({
   titleView: {
     flex: 2,
   },
+  accountsList: {
+    flex: 1,
+  },
 });
 
 export default ActivityScreen;

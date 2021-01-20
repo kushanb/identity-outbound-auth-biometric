@@ -24,6 +24,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
@@ -56,30 +57,34 @@ const Tab = createBottomTabNavigator();
 //   );
 // };
 
+const Stack = createStackNavigator();
+
 const App: () => React$Node = () => {
   return (
     <>
       <StatusBar barStyle="default" />
       {/* <SafeAreaView> */}
       <NavigationContainer>
-        {/* <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="QRScreen" component={ScanScreen} />
-            <Stack.Screen name="Authorization Request" component={AuthScreen} />
-          </Stack.Navigator> */}
-        {/* <TabViewExample />
-        </NavigationContainer> */}
-        {/* <StartScreen /> */}
-        {/* <AddAccountScreen /> */}
-        {/* <AddAccountSuccessScreen /> */}
-        {/* <AddAccountFailedScreen /> */}
-        {/* <AuthFailedScreen /> */}
-        {/* <AccountsScreen /> */}
-        {/* <AuthRequestScreen /> */}
-        {/* <ActivityScreen /> */}
-        {/* <NavigationContainer> */}
-        <MainScreen />
+        <Stack.Navigator initialRouteName="Start" headerMode="none">
+          <Stack.Screen name="Start" component={StartScreen} />
+          <Stack.Screen name="Main" component={MainScreen} />
+          <Stack.Screen name="Add Account" component={AddAccountScreen} />
+          <Stack.Screen
+            name="Authorization Request"
+            component={AuthRequestScreen}
+          />
+
+          {/* <StartScreen /> */}
+          {/* <AddAccountScreen /> */}
+          {/* <AddAccountSuccessScreen /> */}
+          {/* <AddAccountFailedScreen /> */}
+          {/* <AuthFailedScreen /> */}
+          {/* <AccountsScreen /> */}
+          {/* <AuthRequestScreen /> */}
+          {/* <ActivityScreen /> */}
+          {/* <NavigationContainer> */}
+          {/* <MainScreen /> */}
+        </Stack.Navigator>
       </NavigationContainer>
 
       {/* <TabViewExample /> */}

@@ -1,15 +1,35 @@
 import React from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 import {LargeButton} from '../components/Button';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
-const AddAccountScreen = () => (
+const AddAccountScreen = ({navigation}) => (
   <View>
     <View style={styles.logoView}>
       <Image
         source={require('../assets/img/wso2logo.png')}
         style={styles.logo}
       />
-      <Text style={styles.logoText}>Verify</Text>
+    </View>
+    <View>
+      <TouchableOpacity
+        onPress={() => {
+          console.log('Back Pressed!');
+          navigation.goBack();
+        }}
+        activeOpacity={0.9}>
+        <Image
+          source={require('../assets/img/material-arrow-back.png')}
+          style={styles.backButton}
+        />
+      </TouchableOpacity>
     </View>
     <View style={styles.titleView}>
       <Text style={styles.title}>Add Account</Text>
@@ -50,7 +70,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {
@@ -98,6 +118,12 @@ const styles = StyleSheet.create({
     width: '85%',
     resizeMode: 'contain',
     top: '-15%',
+  },
+  backButton: {
+    left: wp('5%'),
+    bottom: hp('5%'),
+    alignSelf: 'flex-start',
+    position: 'absolute',
   },
 });
 
