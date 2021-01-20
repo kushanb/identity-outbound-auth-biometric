@@ -75,6 +75,7 @@ const ActivityScreen = () => {
         flexDirection: 'column',
         height: hp('97%'),
         justifyContent: 'center',
+        marginTop: '3%',
       }}>
       <View style={styles.logoView}>
         <Image
@@ -145,15 +146,15 @@ const ActivityScreen = () => {
         <FlatList
           data={selectData}
           renderItem={renderItem}
-          keyExtractor={(item) => item.accountId}
+          keyExtractor={(item) => item.accountId.toString()}
           extraData={selectedMenu}
           style={styles.accountsList}
         />
       </View>
 
-      <View style={{flex: 2, justifyContent: 'flex-start'}}>
+      {/* <View style={{flex: 2, justifyContent: 'flex-start'}}>
         <BottomNavigation screen="Activity" />
-      </View>
+      </View> */}
     </View>
   );
 };
@@ -164,6 +165,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
+    marginTop: '4%',
   },
   logo: {
     alignSelf: 'center',

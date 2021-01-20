@@ -33,14 +33,35 @@ import AuthFailedScreen from './src/screens/AuthFailedScreen';
 import AccountsScreen from './src/screens/AccountsScreen';
 import AuthRequestScreen from './src/screens/AuthRequestScreen';
 import ActivityScreen from './src/screens/ActivityScreen';
+import MainScreen from './src/screens/MainScreen';
+
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+
 // import TabViewExample from './src/screens/TabScreenTest';
+const Tab = createBottomTabNavigator();
+
+// const TestOne = () => {
+//   return (
+//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+//       <Text>Hello World</Text>
+//     </View>
+//   );
+// };
+
+// const TestTwo = () => {
+//   return (
+//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+//       <Text>Hello World 2</Text>
+//     </View>
+//   );
+// };
 
 const App: () => React$Node = () => {
   return (
     <>
       <StatusBar barStyle="default" />
-      <SafeAreaView>
-        {/* <NavigationContainer> */}
+      {/* <SafeAreaView> */}
+      <NavigationContainer>
         {/* <Stack.Navigator initialRouteName="Home">
             <Stack.Screen name="Home" component={HomeScreen} />
             <Stack.Screen name="Register" component={RegisterScreen} />
@@ -56,9 +77,13 @@ const App: () => React$Node = () => {
         {/* <AuthFailedScreen /> */}
         {/* <AccountsScreen /> */}
         {/* <AuthRequestScreen /> */}
-        <ActivityScreen />
-        {/* <TabViewExample /> */}
-      </SafeAreaView>
+        {/* <ActivityScreen /> */}
+        {/* <NavigationContainer> */}
+        <MainScreen />
+      </NavigationContainer>
+
+      {/* <TabViewExample /> */}
+      {/* </SafeAreaView> */}
     </>
   );
 };

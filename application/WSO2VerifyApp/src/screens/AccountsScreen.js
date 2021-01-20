@@ -57,7 +57,7 @@ const AccountsScreen = () => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.accountId}
+          keyExtractor={(item) => item.accountId.toString()}
           style={styles.accountsList}
         />
       </View>
@@ -67,9 +67,9 @@ const AccountsScreen = () => {
           style={styles.addButton}
         />
       </TouchableOpacity>
-      <View>
+      {/* <View>
         <BottomNavigation screen="Activity" />
-      </View>
+      </View> */}
     </View>
   );
 };
