@@ -1,8 +1,9 @@
+import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import {LargeButton} from '../components/Button';
 
-const AddAccountSuccessScreen = () => {
+const AddAccountSuccessScreen = ({navigation}) => {
   return (
     <View>
       <View style={styles.logoView}>
@@ -10,7 +11,6 @@ const AddAccountSuccessScreen = () => {
           source={require('../assets/img/wso2logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.logoText}>Verify</Text>
       </View>
       <View>
         <View style={styles.resultContainer}>
@@ -26,7 +26,7 @@ const AddAccountSuccessScreen = () => {
         </View>
       </View>
       <View style={styles.buttonView}>
-        <LargeButton title="Done" />
+        <LargeButton title="Done" action={navigation.navigate('Main')} />
       </View>
     </View>
   );
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {

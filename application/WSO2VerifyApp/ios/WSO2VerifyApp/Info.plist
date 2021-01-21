@@ -61,5 +61,7 @@
 		<string>Roboto-Medium.ttf</string>
 		<string>Roboto-Bold.ttf</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Your camera will be used to add new accounts</string>
 </dict>
 </plist>

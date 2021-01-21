@@ -35,40 +35,40 @@ import AccountsScreen from './src/screens/AccountsScreen';
 import AuthRequestScreen from './src/screens/AuthRequestScreen';
 import ActivityScreen from './src/screens/ActivityScreen';
 import MainScreen from './src/screens/MainScreen';
+import QRScannerScreen from './src/screens/QRScannerScreen';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 // import TabViewExample from './src/screens/TabScreenTest';
 const Tab = createBottomTabNavigator();
 
-// const TestOne = () => {
-//   return (
-//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-//       <Text>Hello World</Text>
-//     </View>
-//   );
-// };
-
-// const TestTwo = () => {
-//   return (
-//     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-//       <Text>Hello World 2</Text>
-//     </View>
-//   );
-// };
+const accounts = [];
 
 const Stack = createStackNavigator();
 
+const accountsAvailable = () => {
+  console.log(accounts.length);
+  return accounts.length == 0 ? 'Main' : 'Start';
+};
+
 const App: () => React$Node = () => {
+  // const accountsAvailable = 'Start';
+
   return (
     <>
       <StatusBar barStyle="default" />
       {/* <SafeAreaView> */}
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Start" headerMode="none">
+        <Stack.Navigator initialRouteName="Main" headerMode="none">
           <Stack.Screen name="Start" component={StartScreen} />
           <Stack.Screen name="Main" component={MainScreen} />
           <Stack.Screen name="Add Account" component={AddAccountScreen} />
+          <Stack.Screen name="QR Scanner" component={QRScannerScreen} />
+          <Stack.Screen
+            name="Add Success"
+            component={AddAccountSuccessScreen}
+          />
+
           <Stack.Screen
             name="Authorization Request"
             component={AuthRequestScreen}
@@ -84,6 +84,7 @@ const App: () => React$Node = () => {
           {/* <ActivityScreen /> */}
           {/* <NavigationContainer> */}
           {/* <MainScreen /> */}
+          {/* <QRScannerScreen /> */}
         </Stack.Navigator>
       </NavigationContainer>
 
