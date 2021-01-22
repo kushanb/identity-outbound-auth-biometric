@@ -11,7 +11,7 @@ import {
 } from 'react-native-responsive-screen';
 
 const AddAccountScreen = ({navigation}) => (
-  <View>
+  <View style={styles.container}>
     <View style={styles.logoView}>
       <Image
         source={require('../assets/img/wso2logo.png')}
@@ -24,11 +24,9 @@ const AddAccountScreen = ({navigation}) => (
           console.log('Back Pressed!');
           navigation.goBack();
         }}
-        activeOpacity={0.9}>
-        <Image
-          source={require('../assets/img/material-arrow-back.png')}
-          style={styles.backButton}
-        />
+        activeOpacity={0.9}
+        style={styles.backButton}>
+        <Image source={require('../assets/img/material-arrow-back.png')} />
       </TouchableOpacity>
     </View>
     <View style={styles.titleView}>
@@ -50,7 +48,7 @@ const AddAccountScreen = ({navigation}) => (
       <View style={styles.button}>
         <LargeButton
           title="Scan QR Code"
-          action={() => navigation.navigate('QR Scanner')}
+          action={() => navigation.navigate('Add Failed')} //TODO: Change back to QR
         />
       </View>
     </View>
@@ -58,34 +56,19 @@ const AddAccountScreen = ({navigation}) => (
 );
 
 const styles = StyleSheet.create({
-  buttonRoot: {
-    marginTop: 64,
-  },
-  buttonView: {
-    marginVertical: 10,
-    marginHorizontal: '10%',
-  },
   container: {
-    marginVertical: '40%',
-    alignContent: 'center',
     flexDirection: 'column',
+    height: hp('97%'),
     justifyContent: 'center',
+    marginTop: '3%',
   },
   logo: {
     alignSelf: 'center',
     width: '20%',
     resizeMode: 'contain',
   },
-  logoText: {
-    color: '#f47b20',
-    textAlign: 'center',
-    fontWeight: '600',
-    fontSize: 18,
-    top: -30,
-    left: 20,
-  },
   logoView: {
-    marginTop: '5%',
+    flex: 3,
   },
   title: {
     fontSize: 36,
@@ -100,14 +83,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: {height: -2, width: 0},
     shadowRadius: 6,
-    marginTop: '15%',
+    // marginTop: '10%',
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     padding: '10%',
     elevation: 20,
+    flex: 12,
   },
   titleView: {
-    marginTop: '5%',
+    flex: 2,
   },
   button: {
     top: '-35%',

@@ -2,15 +2,14 @@ import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import {LargeButton, LineButton} from '../components/Button';
 
-const AddAccountFailedScreen = () => {
+const AddAccountFailedScreen = ({navigation}) => {
   return (
-    <View>
+    <View style={{backgroundColor: '#FFF', height: '100%'}}>
       <View style={styles.logoView}>
         <Image
           source={require('../assets/img/wso2logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.logoText}>Verify</Text>
       </View>
       <View>
         <View style={styles.resultContainer}>
@@ -26,8 +25,11 @@ const AddAccountFailedScreen = () => {
         </View>
       </View>
       <View style={styles.buttonView}>
-        <LineButton title="Close" />
-        <LargeButton title="Retry" />
+        <LineButton title="Close" action={() => navigation.navigate('Main')} />
+        <LargeButton
+          title="Retry"
+          action={() => navigation.navigate('Add Account')}
+        />
       </View>
     </View>
   );
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {

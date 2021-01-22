@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import AccountCard from '../components/AccountCard';
 import BottomNavigation from '../components/BottomNavigation';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import {
   widthPercentageToDP as wp,
@@ -72,16 +74,14 @@ const AccountsScreen = ({navigation}) => {
         />
       </View>
       <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() => navigation.navigate('Add Account')}>
-        <Image
-          source={require('../assets/img/add-button.png')}
-          style={styles.addButton}
-        />
+        activeOpacity={0.9}
+        onPress={() => {
+          console.log('Add button pressed');
+          navigation.navigate('Add Account');
+        }}
+        style={styles.addButton}>
+        <Image source={require('../assets/img/add-button.png')} />
       </TouchableOpacity>
-      {/* <View>
-        <BottomNavigation screen="Activity" />
-      </View> */}
     </View>
   );
 };
@@ -121,19 +121,6 @@ const styles = StyleSheet.create({
     // fontWeight: '300',
     fontFamily: 'Roboto-Light',
     textAlign: 'center',
-  },
-  mainCardView: {
-    backgroundColor: '#FFF',
-    height: '70%',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: {height: -2, width: 0},
-    shadowRadius: 6,
-    marginTop: '15%',
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    padding: '10%',
-    elevation: 20,
   },
   titleView: {
     flex: 2,

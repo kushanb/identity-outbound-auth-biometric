@@ -26,7 +26,7 @@ const AddAccountSuccessScreen = ({navigation}) => {
         </View>
       </View>
       <View style={styles.buttonView}>
-        <LargeButton title="Done" action={navigation.navigate('Main')} />
+        <LargeButton title="Done" action={() => navigation.navigate('Main')} />
       </View>
     </View>
   );

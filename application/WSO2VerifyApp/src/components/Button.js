@@ -12,14 +12,20 @@ export const LargeButton = ({title, action}) => (
   </TouchableOpacity>
 );
 
-export const LineButton = ({title}) => (
-  <TouchableOpacity style={styles.lineButtonContainer} activeOpacity={0.8}>
+export const LineButton = ({title, action}) => (
+  <TouchableOpacity
+    style={styles.lineButtonContainer}
+    activeOpacity={0.8}
+    onPress={action}>
     <Text style={styles.lineButtonText}>{title}</Text>
   </TouchableOpacity>
 );
 
-export const WhiteButton = ({title}) => (
-  <TouchableOpacity style={styles.whiteButtonContainer} activeOpacity={0.8}>
+export const WhiteButton = ({title, action}) => (
+  <TouchableOpacity
+    style={styles.whiteButtonContainer}
+    activeOpacity={0.8}
+    onPress={action}>
     <Text style={styles.whiteButtonText}>{title}</Text>
   </TouchableOpacity>
 );

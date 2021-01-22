@@ -68,6 +68,7 @@ const App: () => React$Node = () => {
             name="Add Success"
             component={AddAccountSuccessScreen}
           />
+          <Stack.Screen name="Add Failed" component={AddAccountFailedScreen} />
 
           <Stack.Screen
             name="Authorization Request"
