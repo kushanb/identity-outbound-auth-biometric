@@ -6,7 +6,7 @@
  * @flow strict-local
  */
 
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -23,8 +23,10 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import messaging from '@react-native-firebase/messaging';
+import firebase from '@react-native-firebase/app';
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
@@ -39,6 +41,8 @@ import QRScannerScreen from './src/screens/QRScannerScreen';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+import {navigationRef, isReadyRef, navigate} from './src/utils/RootNavigation';
+
 // import TabViewExample from './src/screens/TabScreenTest';
 const Tab = createBottomTabNavigator();
 
@@ -51,14 +55,97 @@ const accountsAvailable = () => {
   return accounts.length == 0 ? 'Main' : 'Start';
 };
 
+const requestUserPermission = async () => {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+};
+
+const getToken = async () => {
+  requestUserPermission()
+    .then(console.log(await messaging().getToken()))
+    .catch((err) => {
+      throw new Error(err);
+    });
+};
+
 const App: () => React$Node = () => {
   // const accountsAvailable = 'Start';
+  // const navigation = useNavigation();
+  // const [initialRoute, setInitialRoute] = useState('Main');
+  // const [loading, setLoading] = useState(true);
+
+  getToken();
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      console.log(
+        'A new FCM message arrived!',
+        JSON.stringify(remoteMessage.data),
+      );
+      navigate('Authorization Request');
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      isReadyRef.current = false;
+    };
+  }, []);
+
+  // useEffect(() => {
+  //   // Assume a message-notification contains a "type" property in the data payload of the screen to open
+
+  //   messaging().onNotificationOpenedApp((remoteMessage) => {
+  //     console.log(
+  //       'Notification caused app to open from background state:',
+  //       remoteMessage.notification,
+  //     );
+  //     navigation.navigate('Start');
+  //   });
+
+  //   // Check whether an initial notification is available
+  //   messaging()
+  //     .getInitialNotification()
+  //     .then((remoteMessage) => {
+  //       if (remoteMessage) {
+  //         console.log(
+  //           'Notification caused app to open from quit state:',
+  //           remoteMessage.notification,
+  //         );
+  //         setInitialRoute('Start'); // e.g. "Settings"
+  //       }
+  //       setLoading(false);
+  //     });
+  // }, []);
+
+  // if (loading) {
+  //   return null;
+  // }
+
+  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    console.log('Message handled in the background!', remoteMessage);
+    console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    navigate('Authorization Request', JSON.parse(remoteMessage));
+  });
 
   return (
     <>
       <StatusBar barStyle="default" />
       {/* <SafeAreaView> */}
-      <NavigationContainer>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => {
+          isReadyRef.current = true;
+        }}>
         <Stack.Navigator initialRouteName="Main" headerMode="none">
           <Stack.Screen name="Start" component={StartScreen} />
           <Stack.Screen name="Main" component={MainScreen} />
@@ -69,7 +156,6 @@ const App: () => React$Node = () => {
             component={AddAccountSuccessScreen}
           />
           <Stack.Screen name="Add Failed" component={AddAccountFailedScreen} />
-
           <Stack.Screen
             name="Authorization Request"
             component={AuthRequestScreen}

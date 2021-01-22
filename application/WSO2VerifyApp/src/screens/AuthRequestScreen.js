@@ -13,7 +13,6 @@ const AuthRequestScreen = () => {
           source={require('../assets/img/wso2logo.png')}
           style={styles.logo}
         />
-        <Text style={styles.logoText}>Verify</Text>
       </View>
 
       {/* Auth request information view */}
@@ -119,7 +118,7 @@ const AuthRequestScreen = () => {
 const styles = StyleSheet.create({
   logo: {
     alignSelf: 'center',
-    width: '25%',
+    width: '20%',
     resizeMode: 'contain',
   },
   logoText: {
