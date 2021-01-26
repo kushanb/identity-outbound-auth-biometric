@@ -16,11 +16,30 @@ import {
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 
+import {Accounts} from 'wso2-mobile-auth-sdk';
+
 const QRScannerScreen = ({navigation}) => {
   onSuccess = (e) => {
-    Linking.openURL(e.data).catch((err) =>
-      console.error('An error occured', err),
-    );
+    console.log('Scanned: ', e.data);
+    // let result = JSON.parse(e.data);
+    // console.log('Object: ', result.one);
+
+    try {
+      let account = new Accounts();
+      // account.getFCMToken();
+      account.addAccount(
+        JSON.parse(e.data),
+        'd-ggvqGSR2aD2WWa_Qd1x2:APA91bHWhgjPSixKwV7vhQ_rsLkelYjAYyxW54H2OYrH78uuX8aLkLGXFGyeRMw3EjAsN0hF0yD6L-XXwSlXQ81nzoWHmkxDPkSiMVHHZeJyG-1UNLUrw2leaJkSLgHneKTvckjigCR9',
+      );
+
+      if (e.data) {
+        navigation.navigate('Add Success');
+      } else {
+        navigation.navigate('Add Failed');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -45,11 +64,9 @@ const QRScannerScreen = ({navigation}) => {
               console.log('Back Pressed!');
               navigation.goBack();
             }}
-            activeOpacity={0.9}>
-            <Image
-              source={require('../assets/img/material-arrow-back.png')}
-              style={styles.backButton}
-            />
+            activeOpacity={0.9}
+            style={styles.backButton}>
+            <Image source={require('../assets/img/material-arrow-back.png')} />
           </TouchableOpacity>
         </View>
         <View style={styles.titleView}>

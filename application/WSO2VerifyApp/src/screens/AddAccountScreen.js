@@ -48,7 +48,7 @@ const AddAccountScreen = ({navigation}) => (
       <View style={styles.button}>
         <LargeButton
           title="Scan QR Code"
-          action={() => navigation.navigate('Add Failed')} //TODO: Change back to QR
+          action={() => navigation.navigate('QR Scanner')} //TODO: Change back to QR
         />
       </View>
     </View>
