@@ -27,6 +27,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
+import {DeviceInformation} from 'wso2-mobile-auth-sdk';
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
@@ -73,6 +74,10 @@ const getToken = async () => {
       throw new Error(err);
     });
 };
+
+// Initialize device information
+new DeviceInformation();
+// TODO: Do a proper implementation in the SDK
 
 const App: () => React$Node = () => {
   // const accountsAvailable = 'Start';

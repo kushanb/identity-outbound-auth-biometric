@@ -29,7 +29,7 @@ const QRScannerScreen = ({navigation}) => {
       // account.getFCMToken();
       account.addAccount(
         JSON.parse(e.data),
-        'd-ggvqGSR2aD2WWa_Qd1x2:APA91bHWhgjPSixKwV7vhQ_rsLkelYjAYyxW54H2OYrH78uuX8aLkLGXFGyeRMw3EjAsN0hF0yD6L-XXwSlXQ81nzoWHmkxDPkSiMVHHZeJyG-1UNLUrw2leaJkSLgHneKTvckjigCR9',
+        'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
       );
 
       if (e.data) {
@@ -39,6 +39,7 @@ const QRScannerScreen = ({navigation}) => {
       }
     } catch (err) {
       console.log(err);
+      navigation.navigate('Add Failed');
     }
   };
 
