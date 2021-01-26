@@ -94,7 +94,7 @@ const App: () => React$Node = () => {
         'A new FCM message arrived!',
         JSON.stringify(remoteMessage.data),
       );
-      navigate('Authorization Request');
+      navigate('Authorization Request', remoteMessage);
     });
 
     return unsubscribe;

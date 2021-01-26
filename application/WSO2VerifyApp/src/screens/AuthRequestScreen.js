@@ -1,7 +1,10 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {Authorization} from 'wso2-mobile-auth-sdk';
 
-const AuthRequestScreen = () => {
+const AuthRequestScreen = ({route, navigation}) => {
+  let authData = Authorization.processAuthRequest(route.params);
+
   return (
     <View>
       {/* Timer view */}
@@ -27,7 +30,7 @@ const AuthRequestScreen = () => {
               Connection Code
             </Text>
             <Text style={styles.connectionCode}>
-              {/*{authData.connectionCode}*/} 216 765
+              {authData.connectionCode} {/* 216 765 */}
             </Text>
           </View>
         </View>
@@ -97,14 +100,26 @@ const AuthRequestScreen = () => {
       </View>
 
       <View style={styles.responseButtonContainer}>
-        <TouchableOpacity style={styles.responseButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.responseButton}
+          activeOpacity={0.7}
+          onPress={() => {
+            Authorization.sendAuthRequest(authData, 'DENIED');
+            navigation.navigate('Main');
+          }}>
           <Image source={require('../assets/img/deny-button.png')} />
           <Text style={[styles.responseButtonText, {color: '#DB4234'}]}>
             No
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.responseButton} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.responseButton}
+          onPress={() => {
+            Authorization.sendAuthRequest(authData, 'SUCCESSFUL');
+            navigation.navigate('Main');
+          }}
+          activeOpacity={0.7}>
           <Image source={require('../assets/img/accept-button.png')} />
           <Text style={[styles.responseButtonText, {color: '#21AD03'}]}>
             Yes
