@@ -127,10 +127,10 @@ export class Authorization {
    * @param authRequest complex object for the request
    * @param response authorisation response given by the user
    */
-  public static sendAuthRequest(
+  public static async sendAuthRequest(
     authRequest: AuthRequestInterface,
     response: string
-  ) {
+  ): Promise<string> {
     console.log("challenge: " + authRequest.challenge);
     let signature = Crypto.signChallenge(
       authRequest.privateKey,
@@ -162,7 +162,14 @@ export class Authorization {
     console.log(authRequestBody);
 
     let request = new RequestSender();
-    request.sendRequest(authRequest.authUrl, "POST", headers, formBody);
+    let result = request.sendRequest(
+      authRequest.authUrl,
+      "POST",
+      headers,
+      formBody
+    );
+
+    return result;
   }
 
   /**
