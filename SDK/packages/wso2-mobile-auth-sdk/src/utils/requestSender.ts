@@ -9,7 +9,7 @@ export class RequestSender {
     requestMethod: any,
     requestHeaders: any,
     body: any
-  ) {
+  ): string {
     fetch(url, {
       method: requestMethod,
       disableAllSecurity: true,
@@ -27,9 +27,12 @@ export class RequestSender {
           [{ text: "OK", onPress: () => console.log("OK Pressed") }],
           { cancelable: false }
         );
+        return response.status == "200" ? "OK" : "Failed";
       })
       .catch((err: any) => {
         console.log(`error: ${err.status}`);
+        return "FAILED";
       });
+    return "FAILED";
   }
 }

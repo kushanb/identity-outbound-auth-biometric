@@ -1,9 +1,11 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * Class for handling push message device tokens
  */
 export class PushMessageService {
+  // public static pushToken: string;
+
   /**
    * Save the push message device token in React Native Aysnc Storage
    *
@@ -40,4 +42,21 @@ export class PushMessageService {
       throw new Error("Push token not available");
     }
   }
+
+  /**
+   * Get the push token
+   *
+   * @returns promise of push token
+   */
+  public static async getPushToken(): Promise<any> {
+    await AsyncStorage.getItem("privateKey")
+      .then((token: any) => {
+        return token;
+      })
+      .catch((err: any) => {
+        throw new Error("NullPushTokenError: " + err);
+      });
+  }
 }
+
+// TODO: Test the functionality of getPushToken()

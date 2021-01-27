@@ -6,7 +6,8 @@ import { Crypto } from "../utils/crypto";
 // import { fetch } from "react-native-ssl-pinning";
 import uuid from "uuid-random";
 import { RequestSender } from "../utils/requestSender";
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Authorization } from "./authorization";
 
 let asyncPriv: string;
 let asyncId: string;
@@ -35,7 +36,7 @@ getData();
  * Class for all the functionality related to accounts
  */
 export class Accounts {
-  private static accountsList: Array<AccountsInterface>;
+  private static accountsList: Array<AccountsInterface> = [];
   //   private fcmToken: string = firebaseInstance.instanceId;
 
   /**
@@ -72,7 +73,7 @@ export class Accounts {
    *
    * @param regRequest body of the scanned QR code
    */
-  public addAccount(regRequest: any, fcmToken: string) {
+  public async addAccount(regRequest: any, fcmToken: string): Promise<string> {
     console.log("Add Account function");
     let discoveryData = this.processDiscoveryData(regRequest);
     console.log("Discovery Data Processed");
@@ -87,6 +88,8 @@ export class Accounts {
     // Store data for later use
     this.storeData(keypair.prvKey);
     this.storeData1(discoveryData.id);
+    getData();
+    Authorization.updateSavedData();
 
     let modPubKey: string = keypair.pubKey
       .replace("-----BEGIN PUBLIC KEY-----", "")
@@ -129,12 +132,14 @@ export class Accounts {
     };
 
     let newRequest: RequestSender = new RequestSender();
-    newRequest.sendRequest(
+    let result = newRequest.sendRequest(
       discoveryData.registrationUrl,
       requestMethod,
       headers,
       JSON.stringify(regRequestBody)
     );
+
+    return result;
   }
 
   /**
@@ -186,16 +191,19 @@ export class Accounts {
    *
    * @param accountID unique ID to identify the account
    */
-  getAccount(accountID: string): any {
-    // TODO: Add the body
-    return null;
+  public static getAccount(accountsList: any, accountID: string): any {
+    accountsList.filter((account: any) => {
+      console.log(
+        "Correct get account: " + JSON.stringify(account.deviceID === accountID)
+      );
+      return account.deviceID === accountID;
+    });
   }
 
   /**
    * Returns the list of saved accounts
    */
   getAccounts(): Array<AccountsInterface> {
-    // TODO: Check how the db usage can be added here
     return Accounts.accountsList;
   }
 

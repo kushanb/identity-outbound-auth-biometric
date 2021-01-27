@@ -5,6 +5,8 @@ import { Crypto } from "../utils/crypto";
 import { RequestSender } from "../utils/requestSender";
 
 import AsyncStorage from "@react-native-community/async-storage";
+import { AccountsInterface } from "src/models/index";
+import { Accounts } from "./accounts";
 
 let privateKey: string;
 
@@ -34,8 +36,14 @@ export class Authorization {
    *
    * @param request JSON object of the request
    */
-  public static processAuthRequest(request: any): AuthRequestInterface {
+  public static processAuthRequest(
+    request: any
+    // accounts: any
+  ): AuthRequestInterface {
     let authRequest: AuthRequestInterface;
+
+    // let account: AccountsInterface = Accounts.getAccount(request.data.deviceID);
+    // Above commented lines are for handling multiple accounts
 
     if (
       request.data.deviceId &&
@@ -169,4 +177,10 @@ export class Authorization {
       return false;
     }
   }
+
+  public static updateSavedData() {
+    getData();
+  }
+
+  // TODO: Handle the data update properly
 }
