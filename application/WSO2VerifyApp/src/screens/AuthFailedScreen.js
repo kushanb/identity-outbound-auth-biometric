@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import {WhiteButton} from '../components/Button';
 
-const AuthFailedScreen = () => {
+const AuthFailedScreen = ({navigation}) => {
   return (
     <View style={styles.body}>
       <View style={styles.failedImageContainer}>
@@ -16,7 +16,12 @@ const AuthFailedScreen = () => {
         <Text style={styles.failedText}>Login Failed... Please Try Again</Text>
       </View>
       <View style={styles.buttonView}>
-        <WhiteButton title="close" />
+        <WhiteButton
+          title="close"
+          action={() => {
+            navigation.navigate('Main');
+          }}
+        />
       </View>
     </View>
   );

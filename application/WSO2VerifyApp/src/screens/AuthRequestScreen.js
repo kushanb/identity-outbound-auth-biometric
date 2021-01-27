@@ -104,7 +104,11 @@ const AuthRequestScreen = ({route, navigation}) => {
           style={styles.responseButton}
           activeOpacity={0.7}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'DENIED');
+            Authorization.sendAuthRequest(authData, 'DENIEDE').then((res) => {
+              navigation.navigate(
+                res == 'OK' ? 'Main' : 'Authorization Failed',
+              );
+            });
             navigation.navigate('Main');
           }}>
           <Image source={require('../assets/img/deny-button.png')} />
@@ -116,8 +120,13 @@ const AuthRequestScreen = ({route, navigation}) => {
         <TouchableOpacity
           style={styles.responseButton}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'SUCCESSFUL');
-            navigation.navigate('Main');
+            Authorization.sendAuthRequest(authData, 'SUCCESSFUL').then(
+              (res) => {
+                navigation.navigate(
+                  res == 'OKl' ? 'Main' : 'Authorization Failed',
+                );
+              },
+            );
           }}
           activeOpacity={0.7}>
           <Image source={require('../assets/img/accept-button.png')} />

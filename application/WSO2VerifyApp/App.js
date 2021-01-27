@@ -165,6 +165,10 @@ const App: () => React$Node = () => {
             name="Authorization Request"
             component={AuthRequestScreen}
           />
+          <Stack.Screen
+            name="Authorization Failed"
+            component={AuthFailedScreen}
+          />
 
           {/* <StartScreen /> */}
           {/* <AddAccountScreen /> */}

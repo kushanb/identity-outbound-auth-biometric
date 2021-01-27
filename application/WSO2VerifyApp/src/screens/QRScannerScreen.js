@@ -27,16 +27,24 @@ const QRScannerScreen = ({navigation}) => {
     try {
       let account = new Accounts();
       // account.getFCMToken();
-      account.addAccount(
-        JSON.parse(e.data),
-        'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
-      );
+      account
+        .addAccount(
+          JSON.parse(e.data),
+          'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
+        )
+        .then((res) => {
+          if (res == 'OK') {
+            navigation.navigate('Add Success');
+          } else if (res == 'FAILED') {
+            navigation.navigate('Add Failed');
+          }
+        });
 
-      if (e.data) {
-        navigation.navigate('Add Success');
-      } else {
-        navigation.navigate('Add Failed');
-      }
+      // if (e.data) {
+      //   navigation.navigate('Add Success');
+      // } else {
+      //   navigation.navigate('Add Failed');
+      // }
     } catch (err) {
       console.log(err);
       navigation.navigate('Add Failed');
