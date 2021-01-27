@@ -10,7 +10,7 @@ export class RequestSender {
     requestHeaders: any,
     body: any
   ): string {
-    fetch(url, {
+    return fetch(url, {
       method: requestMethod,
       disableAllSecurity: true,
       sslPinning: {
@@ -21,18 +21,17 @@ export class RequestSender {
     })
       .then((response: { bodyString: string; status: string }) => {
         console.log(`response received ${response.bodyString}`);
-        Alert.alert(
-          "Request",
-          "Status: " + response.status + "\nMessage: " + response.bodyString,
-          [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-          { cancelable: false }
-        );
-        return response.status == "200" ? "OK" : "Failed";
+        // Alert.alert(
+        //   "Request",
+        //   "Status: " + response.status + "\nMessage: " + response.bodyString,
+        //   [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        //   { cancelable: false }
+        // );
+        return response.status == "200" ? "OK" : "FAILED";
       })
       .catch((err: any) => {
         console.log(`error: ${err.status}`);
         return "FAILED";
       });
-    return "FAILED";
   }
 }
