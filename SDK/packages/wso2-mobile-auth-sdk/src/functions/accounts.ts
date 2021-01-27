@@ -132,7 +132,7 @@ export class Accounts {
     };
 
     let newRequest: RequestSender = new RequestSender();
-    let result = newRequest.sendRequest(
+    let result: string = newRequest.sendRequest(
       discoveryData.registrationUrl,
       requestMethod,
       headers,
@@ -147,7 +147,10 @@ export class Accounts {
    *
    * @param accountID unique ID to identify the account
    */
-  public removeAccount(accountID: string, privateKey: string): void {
+  public async removeAccount(
+    accountID: string,
+    privateKey: string
+  ): Promise<string> {
     console.log("Remove account function");
     // TODO: Complete the body
     let challenge = uuid();
@@ -183,7 +186,14 @@ export class Accounts {
     console.log("Delete Form Body: " + formBody);
 
     let request: RequestSender = new RequestSender();
-    request.sendRequest(url, requestMethod, headers, formBody);
+    let result: string = request.sendRequest(
+      url,
+      requestMethod,
+      headers,
+      formBody
+    );
+
+    return result;
   }
 
   /**
