@@ -15,14 +15,38 @@ import {
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Accounts} from 'wso2-mobile-auth-sdk';
 
+let pushId;
+
+const getPushId = async () => {
+  try {
+    let value = await AsyncStorage.getItem('pushId');
+    pushId = value;
+    console.log('Async pushID: ' + pushId);
+  } catch (e) {
+    console.log('No Push ID available');
+  }
+};
+
+// getPushId();
+
 const QRScannerScreen = ({navigation}) => {
+  // getPushId();
+  if (pushId == null) {
+    getPushId();
+  }
+
   onSuccess = (e) => {
     console.log('Scanned: ', e.data);
     // let result = JSON.parse(e.data);
     // console.log('Object: ', result.one);
+    // let pushId = getPushId().then((value) => {
+    //   return value;
+    // });
+    console.log('Async pushID 2: ' + pushId);
 
     try {
       let account = new Accounts();
@@ -30,7 +54,8 @@ const QRScannerScreen = ({navigation}) => {
       account
         .addAccount(
           JSON.parse(e.data),
-          'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
+          // 'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
+          pushId,
         )
         .then((res) => {
           if (res == 'OK') {

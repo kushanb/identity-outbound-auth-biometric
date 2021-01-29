@@ -27,6 +27,7 @@ import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {DeviceInformation} from 'wso2-mobile-auth-sdk';
 
 import StartScreen from './src/screens/StartScreen';
@@ -69,7 +70,11 @@ const requestUserPermission = async () => {
 
 const getToken = async () => {
   requestUserPermission()
-    .then(console.log(await messaging().getToken()))
+    .then(async () => {
+      let fcmToken = await messaging().getToken();
+      console.log(fcmToken);
+      await AsyncStorage.setItem('pushId', fcmToken);
+    })
     .catch((err) => {
       throw new Error(err);
     });
