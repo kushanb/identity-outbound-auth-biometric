@@ -45,6 +45,9 @@ public class BiometricAuthenticatorConstants {
     public static final String ORGANIZATION_NAME = "organization";
     public static final String APPLICATION_NAME = "applicationName";
     public static final String APPLICATION_URL = "applicationUrl";
+    public static final String IP_ADDRESS = "ipAddress";
+    public static final String REQUEST_DEVICE_OS = "deviceName";
+    public static final String REQUEST_DEVICE_BROWSER = "browserName";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
     public static final String TO = "to";

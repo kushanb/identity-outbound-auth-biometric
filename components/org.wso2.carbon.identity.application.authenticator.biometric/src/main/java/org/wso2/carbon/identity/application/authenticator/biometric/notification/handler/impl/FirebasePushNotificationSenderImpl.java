@@ -75,7 +75,8 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
     public void sendPushNotification(String deviceId, String pushId,
                                      String message, String randomChallenge, String sessionDataKey,
                                      String username, String fullName, String organization,
-                                     String serviceProviderName, String hostname)
+                                     String serviceProviderName, String hostname, String userOS,
+                                     String userBrowser)
             throws AuthenticationFailedException {
 
         try {
@@ -107,7 +108,10 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             biometricNotificationData.put(BiometricAuthenticatorConstants.FULL_NAME, fullName);
             biometricNotificationData.put(BiometricAuthenticatorConstants.ORGANIZATION_NAME, organization);
             biometricNotificationData.put(BiometricAuthenticatorConstants.APPLICATION_NAME, serviceProviderName);
-            biometricNotificationData.put(BiometricAuthenticatorConstants.APPLICATION_URL, hostname);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.IP_ADDRESS, hostname);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.REQUEST_DEVICE_BROWSER, userBrowser);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.REQUEST_DEVICE_OS, userOS);
+//            biometricNotificationData.put(BiometricAuthenticatorConstants.APPLICATION_URL, hostname);
             //Reason for sending the click_action in the data payload is to
             // specifically open a different activity in android app except the default main activity.
             biometricNotificationData.put(BiometricAuthenticatorConstants.CLICK_ACTION,

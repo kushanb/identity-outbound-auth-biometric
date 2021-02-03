@@ -60,6 +60,11 @@ import java.sql.SQLException;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import ua_parser.Parser;
+import ua_parser.Client;
+import java.net.*;
+import java.io.*;
 /**
  * This is the class that implements the biometric authenticator feature.
  */
@@ -299,7 +304,9 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(BiometricAuthenticatorConstants.SERVER_KEY);
         String fcmUrl = authenticatorProperties.get(BiometricAuthenticatorConstants.FCM_URL);
-        String hostname = IdentityUtil.getHostName();
+//        String hostname = IdentityUtil.getHostName();
+        String hostname = request.getRemoteAddr();
+
 
         String serviceProviderName = context.getServiceProviderName();
 
@@ -311,6 +318,13 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         context.setProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
 
         String pushId = device.getPushId();
+
+//        URL whatismyip = new URL("http://checkip.amazonaws.com");
+//        BufferedReader in = new BufferedReader(new InputStreamReader(
+//                whatismyip.openStream()));
+//
+//        String userIp = in.readLine(); //you get the IP as a String
+
 
         Map<String, String> userClaims = null;
         try {
@@ -326,12 +340,21 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
 //        String fullName = "John Doe";
 //        String organization = "WSO2";
+//        String ipAddr = request;
+
+        String userAgentString = request.getHeader("user-agent");
+        Parser uaParser = new Parser();
+        Client uaClient = uaParser.parse(userAgentString);
+
+        String userOS = uaClient.os.family;
+        String userBrowser = uaClient.userAgent.family;
+
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
             pushNotificationSender.sendPushNotification(deviceid, pushId, message, randomChallenge, sessionDataKey,
-                    username, fullName, organization, serviceProviderName, hostname);
+                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
         } catch (AuthenticationFailedException e) {
             log.error("Authentication Error", e);
         }

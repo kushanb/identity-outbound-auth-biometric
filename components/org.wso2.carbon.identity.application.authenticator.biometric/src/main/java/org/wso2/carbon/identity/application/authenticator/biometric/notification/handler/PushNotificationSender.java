@@ -32,5 +32,6 @@ public interface PushNotificationSender {
     void sendPushNotification(String deviceId, String pushId, String message,
                               String randomChallenge, String sessionDataKey, String username,
                               String fullName, String organization, String serviceProvideName,
-                              String hostName) throws AuthenticationFailedException;
+                              String hostName, String userOS, String userBrowser)
+            throws AuthenticationFailedException;
 }
