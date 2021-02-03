@@ -40,6 +40,11 @@ public class BiometricAuthenticatorConstants {
     public static final String PRIORITY = "priority";
     public static final String DEVICE_ID = "deviceId";
     public static final String CHALLENGE = "challenge";
+    public static final String USERNAME = "username";
+    public static final String FULL_NAME = "displayName";
+    public static final String ORGANIZATION_NAME = "organization";
+    public static final String APPLICATION_NAME = "applicationName";
+    public static final String APPLICATION_URL = "applicationUrl";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
     public static final String TO = "to";
@@ -54,6 +59,10 @@ public class BiometricAuthenticatorConstants {
     public static final String BIOMETRIC_AUTH_ACCESS_DENIED = "access-denied";
     public static final String AUTH_REQUEST_STATUS_SUCCESS = "SUCCESSFUL";
     public static final String AUTH_REQUEST_STATUS_DENIED = "DENIED";
+
+    public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
+    public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";
+    public static final String ORGANIZATION_CLAIM = "http://wso2.org/claims/organization";
 
     public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
     public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";

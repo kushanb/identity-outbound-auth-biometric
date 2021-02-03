@@ -22,11 +22,11 @@ package org.wso2.carbon.identity.application.authenticator.biometric.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.*;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
+import org.wso2.carbon.user.core.service.RealmService;
+
 import java.util.Hashtable;
 
 /**
@@ -36,6 +36,8 @@ import java.util.Hashtable;
         name = "identity.application.authenticator.biometric.component",
         immediate = true)
 public class BiometricAuthenticatorServiceComponent {
+    private static RealmService realmService;
+
 
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
 
@@ -62,5 +64,24 @@ public class BiometricAuthenticatorServiceComponent {
         if (log.isDebugEnabled()) {
             log.debug("biometric authenticator service component is deactivated.");
         }
+    }
+
+    @Reference(
+            name = "RealmService",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService"
+    )
+    protected void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
+    }
+
+    protected void unsetRealmService(RealmService realmService) {
+        this.realmService = null;
+    }
+
+    public static RealmService getRealmService() {
+        return realmService;
     }
 }

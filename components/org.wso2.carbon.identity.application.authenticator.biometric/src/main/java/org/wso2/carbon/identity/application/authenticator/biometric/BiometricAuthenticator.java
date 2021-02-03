@@ -38,10 +38,16 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
+import org.wso2.carbon.identity.application.authenticator.biometric.internal.BiometricAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.FirebasePushNotificationSenderImpl;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UserCoreConstants;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -93,7 +99,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-
+        request.getRemoteAddr();
         try {
             ArrayList<Device> deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
@@ -306,10 +312,26 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
         String pushId = device.getPushId();
 
+        Map<String, String> userClaims = null;
+        try {
+            userClaims = getUserClaimValues(user, context);
+        } catch (AuthenticationFailedException e) {
+            log.error("User Claims Error", e);
+        }
+
+        String fullName =
+                userClaims.get(BiometricAuthenticatorConstants.FIRST_NAME_CLAIM) + " " +
+                userClaims.get(BiometricAuthenticatorConstants.LAST_NAME_CLAIM);
+        String organization = user.getTenantDomain();
+
+//        String fullName = "John Doe";
+//        String organization = "WSO2";
+
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
-            pushNotificationSender.sendPushNotification(deviceid, pushId, message, randomChallenge, sessionDataKey);
+            pushNotificationSender.sendPushNotification(deviceid, pushId, message, randomChallenge, sessionDataKey,
+                    username, fullName, organization, serviceProviderName, hostname);
         } catch (AuthenticationFailedException e) {
             log.error("Authentication Error", e);
         }
@@ -347,5 +369,53 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         }
         return isvalid;
     }
+
+    private Map<String, String> getUserClaimValues(
+            AuthenticatedUser authenticatedUser, AuthenticationContext context)
+            throws AuthenticationFailedException {
+
+        Map<String, String> claimValues;
+        try {
+            UserRealm userRealm = getUserRealm(authenticatedUser, context);
+            UserStoreManager userStoreManager = userRealm.getUserStoreManager();
+            claimValues = userStoreManager.getUserClaimValues(IdentityUtil.addDomainToName(
+                    authenticatedUser.getUserName(), authenticatedUser.getUserStoreDomain()), new String[]{
+                            BiometricAuthenticatorConstants.FIRST_NAME_CLAIM,
+                            BiometricAuthenticatorConstants.LAST_NAME_CLAIM},
+                    UserCoreConstants.DEFAULT_PROFILE);
+        } catch (UserStoreException e) {
+            log.error("Error while reading user claims", e);
+            String errorMessage = String.format("Failed to read user claims for user : %s.", authenticatedUser);
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
+        return claimValues;
+    }
+
+    /**
+     * Get the user realm of the logged in user.
+     *
+     * @param authenticatedUser Authenticated user.
+     * @return The userRealm.
+     * @throws AuthenticationFailedException Exception on authentication failure.
+     */
+    private UserRealm getUserRealm(
+            AuthenticatedUser authenticatedUser, AuthenticationContext context)
+            throws AuthenticationFailedException {
+
+        UserRealm userRealm = null;
+        try {
+            if (authenticatedUser != null) {
+                String tenantDomain = authenticatedUser.getTenantDomain();
+                int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+                RealmService realmService = BiometricAuthenticatorServiceComponent.getRealmService();
+//                RealmService realmService = null;// = (RealmService) context.getOSGiService(RealmService.class, null);
+                userRealm = realmService.getTenantUserRealm(tenantId);
+            }
+        } catch (UserStoreException e) {
+            throw new AuthenticationFailedException("Cannot find the user realm.", e);
+        }
+        return userRealm;
+    }
+
 
 }

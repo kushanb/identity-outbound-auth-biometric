@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
+import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.PushNotificationSender;
 import java.io.IOException;
@@ -72,7 +73,9 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
 
     @Override
     public void sendPushNotification(String deviceId, String pushId,
-                                     String message, String randomChallenge, String sessionDataKey)
+                                     String message, String randomChallenge, String sessionDataKey,
+                                     String username, String fullName, String organization,
+                                     String serviceProviderName, String hostname)
             throws AuthenticationFailedException {
 
         try {
@@ -100,6 +103,11 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             biometricNotificationData.put(BiometricAuthenticatorConstants.BODY, message);
             biometricNotificationData.put(BiometricAuthenticatorConstants.CHALLENGE, randomChallenge);
             biometricNotificationData.put(InboundConstants.RequestProcessor.CONTEXT_KEY, sessionDataKey);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.USERNAME, username);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.FULL_NAME, fullName);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.ORGANIZATION_NAME, organization);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.APPLICATION_NAME, serviceProviderName);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.APPLICATION_URL, hostname);
             //Reason for sending the click_action in the data payload is to
             // specifically open a different activity in android app except the default main activity.
             biometricNotificationData.put(BiometricAuthenticatorConstants.CLICK_ACTION,

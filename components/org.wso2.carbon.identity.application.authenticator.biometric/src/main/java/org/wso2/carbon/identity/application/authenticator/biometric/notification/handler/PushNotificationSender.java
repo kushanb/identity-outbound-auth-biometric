@@ -30,5 +30,7 @@ public interface PushNotificationSender {
      * Send a push notification to a specific device ID with the session data key, randomChallenge and the message.
      */
     void sendPushNotification(String deviceId, String pushId, String message,
-                              String randomChallenge, String sessionDataKey) throws AuthenticationFailedException;
+                              String randomChallenge, String sessionDataKey, String username,
+                              String fullName, String organization, String serviceProvideName,
+                              String hostName) throws AuthenticationFailedException;
 }
