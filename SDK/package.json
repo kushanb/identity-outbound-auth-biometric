@@ -1,0 +1,16 @@
+{
+  "name": "wso2-push-sdk",
+  "version": "0.1.0",
+  "description": "Background package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kushan Bhareti",
+  "license": "ISC",
+  "dependencies": {
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
+    "react-native": "~0.63.3"
+  }
+}
