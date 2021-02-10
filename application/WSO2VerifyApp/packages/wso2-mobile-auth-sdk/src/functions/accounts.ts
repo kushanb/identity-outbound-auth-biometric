@@ -1,0 +1,301 @@
+import { RegistrationRequestInterface } from "../models/registrationRequest";
+import { AccountsInterface } from "../models/accounts";
+import { DiscoveryDataInterface } from "../models/discoveryData";
+import { DeviceInformation } from "../utils/deviceInformation";
+import { Crypto } from "../utils/crypto";
+// import { fetch } from "react-native-ssl-pinning";
+import uuid from "uuid-random";
+import { RequestSender } from "../utils/requestSender";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Authorization } from "./authorization";
+
+let asyncPriv: string;
+let asyncId: string;
+
+const getData = async () => {
+  try {
+    const value = await AsyncStorage.getItem("privateKey");
+    if (value !== null) {
+      // value previously stored
+      asyncPriv = value;
+    }
+    const value2 = await AsyncStorage.getItem("deviceId");
+    if (value !== null) {
+      // value previously stored
+      asyncId = value2;
+    }
+  } catch (e) {
+    // error reading value
+    console.log("No private key available");
+  }
+};
+
+getData();
+
+/**
+ * Class for all the functionality related to accounts
+ */
+export class Accounts {
+  private static accountsList: Array<AccountsInterface> = [];
+  //   private fcmToken: string = firebaseInstance.instanceId;
+
+  /**
+   * Constructor for the Accounts class
+   */
+  constructor() {
+    if (Accounts.accountsList == null) {
+      Accounts.accountsList = [];
+    }
+  }
+
+  storeData = async (privKey: string) => {
+    try {
+      await AsyncStorage.setItem("privateKey", privKey);
+    } catch (e) {
+      console.log("Async storage error: " + e);
+    }
+  };
+
+  storeData1 = async (deviceId: string) => {
+    try {
+      await AsyncStorage.setItem("deviceId", deviceId);
+    } catch (e) {
+      console.log("Async storage error: " + e);
+    }
+  };
+
+  /*
+   * API functions
+   */
+
+  /**
+   * Enrol the device with the WSO2 Identity Server
+   *
+   * @param regRequest body of the scanned QR code
+   */
+  public async addAccount(regRequest: any, fcmToken: string): Promise<string> {
+    console.log("Add Account function");
+    let discoveryData = this.processDiscoveryData(regRequest);
+    console.log("Discovery Data Processed");
+
+    let keypair: any = Crypto.generateKeypair();
+    console.log("Keypair:", keypair);
+    let signedChallenege: string = Crypto.signChallenge(
+      keypair.prvKey,
+      regRequest.challenge
+    );
+
+    // Store data for later use
+    this.storeData(keypair.prvKey);
+    this.storeData1(discoveryData.id);
+    getData();
+    Authorization.updateSavedData();
+
+    let modPubKey: string = keypair.pubKey
+      .replace("-----BEGIN PUBLIC KEY-----", "")
+      .replace("-----END PUBLIC KEY-----", "")
+      .replace(/(\r\n|\n|\r)/gm, "");
+
+    let request: RegistrationRequestInterface;
+    request = {
+      id: discoveryData.id,
+      pushID: fcmToken,
+      publicKey: modPubKey,
+      signature: signedChallenege,
+    };
+
+    request.deviceName = DeviceInformation.getDeviceName();
+    request.model = DeviceInformation.getDeviceModel();
+
+    let regRequestBody: any = {
+      id: request.id,
+      model: request.model,
+      name: request.deviceName,
+      publickey: request.publicKey,
+      pushId: request.pushID,
+      signature: request.signature,
+    };
+
+    console.log("Request Body:", JSON.stringify(regRequestBody));
+
+    // try {
+    //   this.sendEnrolementRequest(regRequestBody);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+
+    let requestMethod = "POST";
+
+    let headers = {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    };
+
+    let newRequest: RequestSender = new RequestSender();
+    let result: string = newRequest.sendRequest(
+      discoveryData.registrationUrl,
+      requestMethod,
+      headers,
+      JSON.stringify(regRequestBody)
+    );
+
+    return result;
+  }
+
+  /**
+   * Revoke the enrolement of the device from the Identity Server
+   *
+   * @param accountID unique ID to identify the account
+   */
+  public async removeAccount(
+    accountID: string,
+    privateKey: string
+  ): Promise<string> {
+    console.log("Remove account function");
+    // TODO: Complete the body
+    let challenge = uuid();
+    let signature = Crypto.signChallenge(asyncPriv, challenge);
+
+    console.log("Remove Account Challenge: " + challenge);
+    console.log("Remove Account Sig: " + signature);
+
+    let delRequestBody: any = {
+      deviceId: asyncId,
+      ACTION: "DELETE",
+      signature: signature,
+      challenge: challenge,
+    };
+
+    let formBody = Object.keys(delRequestBody)
+      .map(
+        (key) =>
+          encodeURIComponent(key) +
+          "=" +
+          encodeURIComponent(delRequestBody[key])
+      )
+      .join("&");
+
+    // TODO: Add the correct implementation to take the url from the saved data
+    let url = "https://192.168.1.112:9443/biometric-auth";
+    let headers = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    let requestMethod = "POST";
+
+    console.log("Delete body:" + JSON.stringify(delRequestBody));
+    console.log("Delete Form Body: " + formBody);
+
+    let request: RequestSender = new RequestSender();
+    let result: string = request.sendRequest(
+      url,
+      requestMethod,
+      headers,
+      formBody
+    );
+
+    return result;
+  }
+
+  /**
+   * Get an account from the dedicated database
+   *
+   * @param accountID unique ID to identify the account
+   */
+  public static getAccount(accountsList: any, accountID: string): any {
+    accountsList.filter((account: any) => {
+      console.log(
+        "Correct get account: " + JSON.stringify(account.deviceID === accountID)
+      );
+      return account.deviceID === accountID;
+    });
+  }
+
+  /**
+   * Returns the list of saved accounts
+   */
+  getAccounts(): Array<AccountsInterface> {
+    return Accounts.accountsList;
+  }
+
+  /*
+   *  Internal functions
+   */
+
+  /**
+   * Organizes the data into a complex object
+   *
+   * @param regRequest JSON string from the QR code
+   */
+  private processDiscoveryData(regRequest: any): DiscoveryDataInterface {
+    // TODO: Change structure once the API on the IS is corrected
+
+    console.log("Process Discovery data");
+    console.log("Reg Request: " + regRequest.id);
+    console.log("Reg Request ID: " + JSON.stringify(regRequest.username));
+
+    let discoveryData: DiscoveryDataInterface;
+
+    if (
+      regRequest.id &&
+      regRequest.username &&
+      regRequest.registrationUrl &&
+      regRequest.authenticationUrl &&
+      regRequest.challenge
+    ) {
+      discoveryData = {
+        id: regRequest.id,
+        username: regRequest.username,
+        registrationUrl: regRequest.registrationUrl,
+        authenticationUrl: regRequest.authenticationUrl,
+        challenge: regRequest.challenge,
+      };
+    } else {
+      throw new Error("One or more required parameters missing");
+    }
+
+    if (regRequest.tenantDomain) {
+      discoveryData.tenantDomain = regRequest.tenantDomain;
+    }
+
+    if (regRequest.userstoreDomain) {
+      discoveryData.userstoreDomain = regRequest.userstoreDomain;
+    }
+
+    console.log("Discovery data test: " + discoveryData.challenge);
+    return discoveryData;
+  }
+
+  /**
+   * Send the request to the IS to enroll the device
+   *
+   * @param request contains the parameters sent to the IS
+   */
+  // private sendEnrolementRequest(request: any) {
+  //   // TODO: change to url from discovery data
+  //   console.log("Send enrolement request function");
+
+  //   fetch(
+  //     "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/biometricdevice",
+  //     {
+  //       method: "POST",
+  //       disableAllSecurity: true,
+  //       sslPinning: {
+  //         certs: ["wso2carbon"],
+  //       },
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(request),
+  //     }
+  //   )
+  //     .then((response) => {
+  //       console.log(`response received ${response}`);
+  //     })
+  //     .catch((err) => {
+  //       console.log(`error: ${err}`);
+  //     });
+  // }
+}
+
+// TODO: identify how to send the data to be saved on the device to the user
