@@ -29,6 +29,10 @@ build/
 local.properties
 *.iml
 
+# Allow
+#
+!gradle-wrapper.jar
+
 # node.js
 #
 node_modules/
