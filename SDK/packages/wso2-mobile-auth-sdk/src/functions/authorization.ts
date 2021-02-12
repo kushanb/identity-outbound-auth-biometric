@@ -7,6 +7,7 @@ import { RequestSender } from "../utils/requestSender";
 import AsyncStorage from "@react-native-community/async-storage";
 import { AccountsInterface } from "src/models/index";
 import { Accounts } from "./accounts";
+import { DateTime } from "src/utils/dateTime";
 
 let privateKey: string;
 
@@ -44,6 +45,8 @@ export class Authorization {
 
     // let account: AccountsInterface = Accounts.getAccount(request.data.deviceID);
     // Above commented lines are for handling multiple accounts
+
+    // TODO: Dynamically set the auth URL
 
     if (
       request.data.deviceId &&
@@ -130,8 +133,11 @@ export class Authorization {
   public static async sendAuthRequest(
     authRequest: AuthRequestInterface,
     response: string
-  ): Promise<string> {
+  ): Promise<(string | AuthRequestInterface)[]> {
     console.log("challenge: " + authRequest.challenge);
+
+    let timestamp = new DateTime();
+
     let signature = Crypto.signChallenge(
       authRequest.privateKey,
       authRequest.challenge
@@ -169,7 +175,15 @@ export class Authorization {
       formBody
     );
 
-    return result;
+    if (result == "OK" && response == "SUCCESSFUL") {
+      authRequest.authenticationStatus = "Accepted";
+    } else if (result == "OK" && response == "DENIED") {
+      authRequest.authenticationStatus = "Denied";
+    }
+
+    authRequest.requestTime = timestamp.getDateTime();
+
+    return [result, authRequest];
   }
 
   /**

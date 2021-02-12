@@ -1,4 +1,6 @@
-export interface AuthDataInterface { 
+import { DateTimeInterface } from "./dateTime";
+
+export interface AuthDataInterface {
   deviceId: string;
   challenge: string;
   authUrl: string;
@@ -22,4 +24,7 @@ export interface AuthRequestInterface extends AuthDataInterface {
   sessionDataKey?: string;
   authUrl: string;
   privateKey: string;
+  authenticationStatus?: String;
+  requestTime?: DateTimeInterface;
+  // TODO: Consider if only the default string for time is sent or a destructured time for custom changes
 }
