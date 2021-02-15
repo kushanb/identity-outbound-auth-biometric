@@ -7,7 +7,7 @@ import { RequestSender } from "../utils/requestSender";
 import AsyncStorage from "@react-native-community/async-storage";
 import { AccountsInterface } from "src/models/index";
 import { Accounts } from "./accounts";
-import { DateTime } from "src/utils/dateTime";
+import { DateTime } from "../utils/dateTime";
 
 let privateKey: string;
 
@@ -133,7 +133,7 @@ export class Authorization {
   public static async sendAuthRequest(
     authRequest: AuthRequestInterface,
     response: string
-  ): Promise<(string | AuthRequestInterface)[]> {
+  ): Promise<any> {
     console.log("challenge: " + authRequest.challenge);
 
     let timestamp = new DateTime();
@@ -168,22 +168,41 @@ export class Authorization {
     console.log(authRequestBody);
 
     let request = new RequestSender();
-    let result = request.sendRequest(
+    let result: Promise<string> = request.sendRequest(
       authRequest.authUrl,
       "POST",
       headers,
       formBody
     );
 
-    if (result == "OK" && response == "SUCCESSFUL") {
-      authRequest.authenticationStatus = "Accepted";
-    } else if (result == "OK" && response == "DENIED") {
-      authRequest.authenticationStatus = "Denied";
-    }
+    // if (result == "OK" && response == "SUCCESSFUL") {
+    //   authRequest.authenticationStatus = "Accepted";
+    //   console.log("Auth is OK and Accepted");
+    // } else if (result == "OK" && response == "DENIED") {
+    //   authRequest.authenticationStatus = "Denied";
+    //   console.log("Auth is OK and Denied");
+    // } else {
+    //   console.log("Auth response has a problem. Check! " + String(result));
+    // }
 
     authRequest.requestTime = timestamp.getDateTime();
 
-    return [result, authRequest];
+    // return JSON.stringify({ res: result, data: authRequest });
+
+    return result.then((result) => {
+      console.log("Response test: " + result);
+      if (result == "OK" && response == "SUCCESSFUL") {
+        authRequest.authenticationStatus = "Accepted";
+        console.log("Auth is OK and Accepted");
+      } else if (result == "OK" && response == "DENIED") {
+        authRequest.authenticationStatus = "Denied";
+        console.log("Auth is OK and Denied");
+      } else {
+        console.log("Auth response has a problem. Check! " + String(result));
+      }
+      console.log(authRequest.authenticationStatus);
+      return JSON.stringify({ res: result, data: authRequest });
+    });
   }
 
   /**

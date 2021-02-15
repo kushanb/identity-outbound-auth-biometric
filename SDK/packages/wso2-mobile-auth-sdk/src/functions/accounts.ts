@@ -135,29 +135,31 @@ export class Accounts {
     };
 
     let newRequest: RequestSender = new RequestSender();
-    let result: string = newRequest.sendRequest(
-      discoveryData.registrationUrl,
-      requestMethod,
-      headers,
-      JSON.stringify(regRequestBody)
-    );
+    return newRequest
+      .sendRequest(
+        discoveryData.registrationUrl,
+        requestMethod,
+        headers,
+        JSON.stringify(regRequestBody)
+      )
+      .then((result) => {
+        let account: AccountsInterface;
+        if (result == "OK") {
+          account = {
+            deviceID: request.id,
+            username: regRequest.id,
+            displayName: regRequest.username,
+            tenantDomain: regRequest.tenantDomain,
+            userstore: regRequest.userstoreDomain,
+            authURL: regRequest.authenticationUrl,
+            privateKey: keypair.privateKey,
+          };
+        } else {
+          account = { deviceID: regRequest.id };
+        }
 
-    let account: AccountsInterface;
-    if (result == "OK") {
-      account = {
-        deviceID: request.id,
-        username: regRequest.id,
-        displayName: regRequest.username,
-        tenantDomain: regRequest.tenantDomain,
-        userstore: regRequest.userstoreDomain,
-        authURL: regRequest.authenticationUrl,
-        privateKey: keypair.privateKey,
-      };
-    } else {
-      account = { deviceID: regRequest.id };
-    }
-
-    return [result, account];
+        return [result, account];
+      });
   }
 
   /**
@@ -204,14 +206,7 @@ export class Accounts {
     console.log("Delete Form Body: " + formBody);
 
     let request: RequestSender = new RequestSender();
-    let result: string = request.sendRequest(
-      url,
-      requestMethod,
-      headers,
-      formBody
-    );
-
-    return result;
+    return request.sendRequest(url, requestMethod, headers, formBody);
   }
 
   /**

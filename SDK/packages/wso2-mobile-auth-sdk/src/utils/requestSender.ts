@@ -4,12 +4,12 @@ import { Alert } from "react-native";
 export class RequestSender {
   public constructor() {}
 
-  public sendRequest(
+  public async sendRequest(
     url: string,
     requestMethod: any,
     requestHeaders: any,
     body: any
-  ): string {
+  ): Promise<string> {
     return fetch(url, {
       method: requestMethod,
       disableAllSecurity: true,
