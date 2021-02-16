@@ -73,10 +73,7 @@ export class Accounts {
    *
    * @param regRequest body of the scanned QR code
    */
-  public async addAccount(
-    regRequest: any,
-    fcmToken: string
-  ): Promise<(string | AccountsInterface)[]> {
+  public async addAccount(regRequest: any, fcmToken: string): Promise<any> {
     console.log("Add Account function");
     let discoveryData = this.processDiscoveryData(regRequest);
     console.log("Discovery Data Processed");
@@ -147,18 +144,18 @@ export class Accounts {
         if (result == "OK") {
           account = {
             deviceID: request.id,
-            username: regRequest.id,
+            username: regRequest.username,
             displayName: regRequest.username,
-            tenantDomain: regRequest.tenantDomain,
-            userstore: regRequest.userstoreDomain,
+            tenantDomain: regRequest.tennantDomain,
+            userstore: regRequest.userStoreDomain,
             authURL: regRequest.authenticationUrl,
-            privateKey: keypair.privateKey,
+            privateKey: keypair.prvKey,
           };
         } else {
           account = { deviceID: regRequest.id };
         }
 
-        return [result, account];
+        return JSON.stringify({ res: result, data: account });
       });
   }
 

@@ -57,10 +57,12 @@ const QRScannerScreen = ({navigation}) => {
           // 'fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB',
           pushId,
         )
-        .then((res) => {
-          if (res == 'OK') {
-            navigation.navigate('Add Success');
-          } else if (res == 'FAILED') {
+        .then((response) => {
+          let res = JSON.parse(response);
+          console.log('Add account response: ' + response);
+          if (res.res == 'OK') {
+            navigation.navigate('Add Success', res.data);
+          } else if (res.res == 'FAILED') {
             navigation.navigate('Add Failed');
           }
         });

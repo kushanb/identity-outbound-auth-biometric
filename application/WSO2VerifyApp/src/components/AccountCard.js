@@ -4,7 +4,9 @@ import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
 const AccountCard = ({account}) => {
   return (
     <View style={styles.cardView}>
-      <Text style={styles.textOrganization}>{account.organization}</Text>
+      <Text style={styles.textOrganization}>
+        {account.organization ? account.organization : ''}
+      </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
           Name{'\t\t'}:{'\t'}

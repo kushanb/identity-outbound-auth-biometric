@@ -127,6 +127,7 @@ const AuthRequestScreen = ({route, navigation}) => {
           activeOpacity={0.7}
           onPress={() => {
             Authorization.sendAuthRequest(authData, 'DENIED').then((res) => {
+              console.log('Authorization response: ' + res);
               navigation.navigate(
                 res == 'OK' ? 'Main' : 'Authorization Failed',
               );
@@ -142,13 +143,26 @@ const AuthRequestScreen = ({route, navigation}) => {
         <TouchableOpacity
           style={styles.responseButton}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'SUCCESSFUL').then(
-              (res) => {
-                navigation.navigate(
-                  res == 'OK' ? 'Main' : 'Authorization Failed',
+            Authorization.sendAuthRequest(authData, 'SUCCESSFUL')
+              .then((res) => {
+                let response = JSON.parse(res);
+                console.log(
+                  'Authorization response: ' +
+                    response.data.authenticationStatus,
                 );
-              },
-            );
+
+                navigation.navigate(
+                  response.res == 'OK' ? 'Main' : 'Authorization Failed',
+                );
+              })
+              .catch((err) => {
+                console.log('Send auth error: ' + err);
+              });
+            // console.log('Authorization response: ' + auth[0]);
+
+            // navigation.navigate(
+            //   auth[0] == 'OK' ? 'Main' : 'Authorization Failed',
+            // );
           }}
           activeOpacity={0.7}>
           <Image source={require('../assets/img/accept-button.png')} />
