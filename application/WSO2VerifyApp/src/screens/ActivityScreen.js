@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -13,49 +13,73 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const data = [
-  {
-    accountId: 1,
-    username: 'kushanb@wso2.com',
-    displayName: 'Kushan Bhareti',
-    organization: 'WSO2',
-    status: 'Declined',
-  },
-  {
-    accountId: 2,
-    username: 'blue@wso2.com',
-    displayName: 'Blue Hudsen',
-    organization: 'WSO2',
-    status: 'Accepted',
-    time: 'Today | 3.30 p.m.',
-  },
-  {
-    accountId: 3,
-    username: 'jonathan@wso2.com',
-    displayName: 'Jonathan Swiss',
-    organization: 'WSO2',
-    status: 'Missed',
-  },
-  {
-    accountId: 4,
-    username: 'nike@google.com',
-    displayName: 'Nike Crane',
-    organization: 'Google',
-    device: 'Phone',
-    status: 'Accepted',
-  },
-];
+// const data = [
+//   {
+//     accountId: 1,
+//     username: 'kushanb@wso2.com',
+//     displayName: 'Kushan Bhareti',
+//     organization: 'WSO2',
+//     status: 'Declined',
+//   },
+//   {
+//     accountId: 2,
+//     username: 'blue@wso2.com',
+//     displayName: 'Blue Hudsen',
+//     organization: 'WSO2',
+//     status: 'Accepted',
+//     time: 'Today | 3.30 p.m.',
+//   },
+//   {
+//     accountId: 3,
+//     username: 'jonathan@wso2.com',
+//     displayName: 'Jonathan Swiss',
+//     organization: 'WSO2',
+//     status: 'Missed',
+//   },
+//   {
+//     accountId: 4,
+//     username: 'nike@google.com',
+//     displayName: 'Nike Crane',
+//     organization: 'Google',
+//     device: 'Phone',
+//     status: 'Accepted',
+//   },
+// ];
 
-const ActivityScreen = () => {
+const ActivityScreen = ({navigation}) => {
   const [selectedMenu, setSelectedMenu] = useState('Accepted');
+  const [data, setData] = useState([]);
+
   // const [filteredData, setFilteredData] = useState(0);
+
+  /*
+   * Loading the data when the accounts screen is focussed to be populated in the cards
+   */
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      const getData = async () => {
+        await AsyncStorage.getItem('activity').then((activity) => {
+          // console.log(JSON.stringify(data) + ' and ' + activity);
+          if (activity != JSON.stringify(data)) {
+            setData(JSON.parse(activity));
+            console.log('Changed so set');
+          } else {
+            console.log('Always running issue!');
+          }
+        });
+      };
+      getData();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const filterData = () => {
     console.log('Filter data called');
     console.log(selectedMenu);
-    // console.log(filteredData);
-    return data.filter((item) => item.status == selectedMenu);
+    // console.log('Activity data: ' + JSON.stringify(data));
+    return data.filter((item) => item.authenticationStatus == selectedMenu);
   };
 
   // if (selectedMenu == '') {
@@ -69,6 +93,7 @@ const ActivityScreen = () => {
   };
 
   let selectData = filterData();
+  // console.log('Filtered Data: ' + JSON.stringify(selectData));
 
   return (
     <View
@@ -76,7 +101,8 @@ const ActivityScreen = () => {
         flexDirection: 'column',
         height: hp('97%'),
         justifyContent: 'center',
-        marginTop: '3%',
+        // marginTop: '3%',
+        backgroundColor: '#FFF',
       }}>
       <View style={styles.logoView}>
         <Image
@@ -98,8 +124,8 @@ const ActivityScreen = () => {
               fontSize: 20,
               fontFamily:
                 selectedMenu === 'Accepted' ? 'Roboto-Regular' : 'Roboto-Light',
-              borderBottomColor: '#FA668A',
-              borderBottomWidth: 3,
+              // borderBottomColor: '#FA668A',
+              // borderBottomWidth: 3,
             }}
             onPress={() => {
               setSelectedMenu('Accepted');
@@ -113,13 +139,13 @@ const ActivityScreen = () => {
             style={{
               fontSize: 20,
               fontFamily:
-                selectedMenu === 'Declined' ? 'Roboto-Regular' : 'Roboto-Light',
+                selectedMenu === 'Denied' ? 'Roboto-Regular' : 'Roboto-Light',
             }}
             onPress={() => {
-              setSelectedMenu('Declined');
+              setSelectedMenu('Denied');
               // setFilteredData(filterData(data));
             }}>
-            Declined
+            Denied
           </Text>
           <Text
             style={{
@@ -146,7 +172,9 @@ const ActivityScreen = () => {
         <FlatList
           data={selectData}
           renderItem={renderItem}
-          keyExtractor={(item) => item.accountId.toString()}
+          inverted={true}
+          // initialScrollIndex={1}
+          keyExtractor={(item) => item.activityId.toString()}
           extraData={selectedMenu}
           style={styles.accountsList}
         />

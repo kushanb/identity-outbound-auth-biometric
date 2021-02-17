@@ -50,7 +50,7 @@ const MainScreen = () => {
       <Tab.Screen
         name="Activity"
         component={ActivityScreen}
-        options={{tabBarBadge: 3}}
+        // options={{tabBarBadge: 3}}
       />
     </Tab.Navigator>
   );

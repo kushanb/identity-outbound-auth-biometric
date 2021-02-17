@@ -87,57 +87,27 @@ const AccountsScreen = ({route, navigation}) => {
 
   // data.length == 0 ? getAccounts() : (data = data);
   console.log('Data is accounts screen: ' + data);
-  // navigation.addListener('willFocus', () => {
-  //   console.log('Fire!');
-  //   getAccounts();
-  // });
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener(
-  //     'focus',
-  //     () => {
-  //       getAccounts()
-  //         .then((d) => {
-  //           // let d = data;
-  //           data.length = 0;
-  //           data.push(...d);
-  //           // });
-  //           console.log('Trigger!' + trigger);
-  //           // console.log(JSON.stringify(data));
-  //           // this.forceUpdate();
-  //           // if (data) {
-  //           //   data.push();
-  //           // }
-  //           trigger = trigger ? false : true;
-  //         })
-  //         .catch((err) => {
-  //           console.log('Error: ' + err);
-  //         });
 
-  //       // Return the function to unsubscribe from the event so it gets removed on unmount
-  //       return unsubscribe;
-  //     },
-  //     [navigation],
-  //   );
-  // });
+  /*
+   * Loading the data when the accounts screen is focussed to be populated in the cards
+   */
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       const getData = async () => {
-        await AsyncStorage.getItem('accounts').then(
-          (accounts) => {
-            // console.log(JSON.stringify(data) + ' and ' + accounts);
-            if (accounts != JSON.stringify(data)) {
-              setData(JSON.parse(accounts));
-              console.log('Changed so set');
-            } else {
-              console.log('Always running issue!');
-            }
-          },
-          [navigation],
-        );
+        await AsyncStorage.getItem('accounts').then((accounts) => {
+          // console.log(JSON.stringify(data) + ' and ' + accounts);
+          if (accounts != JSON.stringify(data)) {
+            setData(JSON.parse(accounts));
+            console.log('Changed so set');
+          } else {
+            console.log('Always running issue!');
+          }
+        });
       };
       getData();
     });
-  });
+    return unsubscribe;
+  }, [navigation]);
 
   const renderItem = ({item}) => <AccountCard account={item} />;
 

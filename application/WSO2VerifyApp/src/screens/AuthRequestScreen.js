@@ -1,6 +1,38 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Authorization} from 'wso2-mobile-auth-sdk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const storeData = async (authData) => {
+  try {
+    await AsyncStorage.getItem('activity').then(async (activity) => {
+      let newActivity;
+      console.log('Saved async activity: ' + activity);
+      console.log('Type of newAccounts: ' + typeof newActivity);
+      if (activity == null) {
+        console.log('Type of newAccounts: ' + typeof newActivity);
+        newActivity = [];
+        console.log('New accounts length: ' + newActivity.length);
+      } else {
+        newActivity = JSON.parse(activity);
+        console.log('New accounts length: ' + newActivity.length);
+      }
+      console.log('Type of newAccounts 2: ' + typeof newActivity);
+      let ad = JSON.parse(authData);
+      ad.activityId = newActivity.length == 0 ? 1 : newActivity.length + 1;
+      console.log('activity ID: ' + ad.activityId);
+      console.log('activity to save: ' + JSON.stringify(ad));
+      newActivity.push(ad);
+      await AsyncStorage.setItem('activity', JSON.stringify(newActivity)).then(
+        () => {
+          console.log('New activity added to async storage');
+        },
+      );
+    });
+  } catch (e) {
+    console.log('Async storage error: ' + e);
+  }
+};
 
 const AuthRequestScreen = ({route, navigation}) => {
   let authData = Authorization.processAuthRequest(route.params);
@@ -126,13 +158,28 @@ const AuthRequestScreen = ({route, navigation}) => {
           style={styles.responseButton}
           activeOpacity={0.7}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'DENIED').then((res) => {
-              console.log('Authorization response: ' + res);
-              navigation.navigate(
-                res == 'OK' ? 'Main' : 'Authorization Failed',
-              );
-            });
-            navigation.navigate('Main');
+            Authorization.sendAuthRequest(authData, 'DENIED')
+              .then((res) => {
+                let response = JSON.parse(res);
+                console.log(
+                  'Authorization response: ' +
+                    response.data.authenticationStatus,
+                );
+
+                if (response.res == 'OK') {
+                  console.log(
+                    'Activity data at success: ' + JSON.stringify(authData),
+                  );
+                  storeData(JSON.stringify(authData));
+                }
+
+                navigation.navigate(
+                  response.res == 'OK' ? 'Main' : 'Authorization Failed',
+                );
+              })
+              .catch((err) => {
+                console.log('Send auth error: ' + err);
+              });
           }}>
           <Image source={require('../assets/img/deny-button.png')} />
           <Text style={[styles.responseButtonText, {color: '#DB4234'}]}>
@@ -150,6 +197,13 @@ const AuthRequestScreen = ({route, navigation}) => {
                   'Authorization response: ' +
                     response.data.authenticationStatus,
                 );
+
+                if (response.res == 'OK') {
+                  console.log(
+                    'Activity data at success: ' + JSON.stringify(authData),
+                  );
+                  storeData(JSON.stringify(authData));
+                }
 
                 navigation.navigate(
                   response.res == 'OK' ? 'Main' : 'Authorization Failed',

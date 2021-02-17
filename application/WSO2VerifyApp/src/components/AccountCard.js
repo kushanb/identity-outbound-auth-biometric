@@ -5,11 +5,11 @@ const AccountCard = ({account}) => {
   return (
     <View style={styles.cardView}>
       <Text style={styles.textOrganization}>
-        {account.organization ? account.organization : ''}
+        {account.tenantDomain ? account.tenantDomain : ''}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
-          Name{'\t\t'}:{'\t'}
+          Name{'\t'}:{'\t'}
         </Text>{' '}
         {account.displayName}
       </Text>

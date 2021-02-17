@@ -4,6 +4,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {compareDate} from '../utils/Date';
 
 const ActivityCard = ({account}) => {
   return (
@@ -30,19 +31,26 @@ const ActivityCard = ({account}) => {
         <Text style={styles.bold}>
           Application{'\t\t'}:{'\t'}
         </Text>{' '}
-        {account.application ? account.application : 'N/A'}
+        {account.applicationName ? account.applicationName : 'N/A'}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
           Device{'\t\t\t'}:{'\t'}
         </Text>{' '}
-        {account.device ? account.device : 'N/A'}
+        {account.deviceName ? account.deviceName : 'N/A'}
       </Text>
       <Text style={styles.textCardContent}>
         <Text style={styles.bold}>
           Time{'\t\t\t'}:{'\t'}
         </Text>{' '}
-        {account.time ? account.time : 'N/A'}
+        {/* {account.requestTime ? account.requestTime.date : 'N/A'} */}
+        {compareDate(
+          account.requestTime.day,
+          account.requestTime.month,
+          account.requestTime.year,
+          account.requestTime.date,
+        ) + ` `}
+        | {account.requestTime.hour + `:` + account.requestTime.minute}
       </Text>
     </View>
   );
