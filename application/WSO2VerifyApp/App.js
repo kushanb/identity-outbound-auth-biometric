@@ -92,6 +92,9 @@ const App: () => React$Node = () => {
 
   getToken();
 
+  /**
+   * Handle auth request from running state
+   */
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
@@ -105,6 +108,26 @@ const App: () => React$Node = () => {
     return unsubscribe;
   }, []);
 
+  /**
+   * Handle auth request from sleep state
+   */
+  useEffect(() => {
+    const unsubscribe = messaging().setBackgroundMessageHandler(
+      async (remoteMessage) => {
+        console.log('Message handled in the background!', remoteMessage);
+        console.log(
+          'A new FCM message arrived!',
+          JSON.stringify(remoteMessage),
+        );
+        navigate('Authorization Request', remoteMessage);
+      },
+    );
+    return unsubscribe;
+  }, []);
+
+  /**
+   * Set component mounted indicator for navigation
+   */
   useEffect(() => {
     return () => {
       isReadyRef.current = false;
@@ -141,11 +164,11 @@ const App: () => React$Node = () => {
   //   return null;
   // }
 
-  messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-    console.log('Message handled in the background!', remoteMessage);
-    console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    navigate('Authorization Request', JSON.parse(remoteMessage));
-  });
+  // messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  //   console.log('Message handled in the background!', remoteMessage);
+  //   console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //   navigate('Authorization Request', JSON.parse(remoteMessage));
+  // });
 
   return (
     <>
