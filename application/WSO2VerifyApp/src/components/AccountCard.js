@@ -1,5 +1,16 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {Accounts} from 'wso2-mobile-auth-sdk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+let data;
 
 const AccountCard = ({account}) => {
   return (
@@ -19,10 +30,61 @@ const AccountCard = ({account}) => {
         </Text>{' '}
         {account.username}
       </Text>
-      <TouchableOpacity style={styles.deleteButton} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={styles.deleteButton}
+        activeOpacity={0.7}
+        onPress={() => removeAccount(account)}>
         <Image source={require('../assets/img/icon-material-delete.png')} />
       </TouchableOpacity>
     </View>
+  );
+};
+
+const filterData = (data, deviceId) => {
+  console.log('Filter data called');
+  console.log(deviceId);
+  // console.log('Activity data: ' + JSON.stringify(data));
+  return data.filter((item) => item.deviceID != deviceId);
+};
+
+const updateAccountsList = async (deviceId) => {
+  let updatedList = await AsyncStorage.getItem('accounts').then((accounts) => {
+    // console.log(JSON.stringify(data) + ' and ' + accounts);
+    let data = JSON.parse(accounts);
+    // let indexToRemove = data.findIndex(filterData(data, deviceId));
+    // data.pop(indexToRemove);
+    // console.log(deviceId);
+
+    console.log(filterData(data, deviceId));
+    return filterData(data, deviceId);
+  });
+
+  await AsyncStorage.setItem('accounts', JSON.stringify(updatedList));
+};
+
+const removeAccount = (account) => {
+  console.log('Account to remove: ' + JSON.stringify(account.username));
+  Alert.alert(
+    'Warning',
+    `Are you sure you want to remove account "${account.username}"?`,
+    [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('OK Pressed');
+          let manageAccounts = new Accounts();
+          manageAccounts.removeAccount(account.deviceId, account.privateKey);
+          // console.log(JSON.stringify(account));
+          updateAccountsList(account.deviceID);
+        },
+      },
+    ],
+    {cancelable: false},
   );
 };
 

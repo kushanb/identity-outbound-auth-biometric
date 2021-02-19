@@ -78,8 +78,10 @@ const ActivityScreen = ({navigation}) => {
   const filterData = () => {
     console.log('Filter data called');
     console.log(selectedMenu);
-    // console.log('Activity data: ' + JSON.stringify(data));
-    return data.filter((item) => item.authenticationStatus == selectedMenu);
+    console.log('Activity data: ' + JSON.stringify(data));
+    return data
+      ? data.filter((item) => item.authenticationStatus == selectedMenu)
+      : [];
   };
 
   // if (selectedMenu == '') {

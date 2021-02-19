@@ -95,10 +95,12 @@ const AccountsScreen = ({route, navigation}) => {
     const unsubscribe = navigation.addListener('focus', () => {
       const getData = async () => {
         await AsyncStorage.getItem('accounts').then((accounts) => {
-          // console.log(JSON.stringify(data) + ' and ' + accounts);
+          console.log(JSON.stringify(data) + ' and ' + accounts);
           if (accounts != JSON.stringify(data)) {
             setData(JSON.parse(accounts));
             console.log('Changed so set');
+          } else if (accounts == []) {
+            setData([]);
           } else {
             console.log('Always running issue!');
           }
@@ -118,6 +120,7 @@ const AccountsScreen = ({route, navigation}) => {
         height: hp('97%'),
         justifyContent: 'center',
         marginTop: '3%',
+        backgroundColor: '#FFF',
       }}>
       <View style={styles.logoView}>
         <Image
