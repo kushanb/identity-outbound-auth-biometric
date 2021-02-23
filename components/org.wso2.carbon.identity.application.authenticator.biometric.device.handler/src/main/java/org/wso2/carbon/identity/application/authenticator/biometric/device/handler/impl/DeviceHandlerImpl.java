@@ -157,8 +157,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         String authUrl = "https://192.168.1.112:9443/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-                        user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));
-        return new DiscoveryData(deviceId, user.getUserName(), tenantDomain,
+                        user.getUserName(), "John Smith", user.getUserStoreDomain(),
+                        user.getTenantDomain(), false));
+        return new DiscoveryData(deviceId, user.getUserName(), "John Smith", tenantDomain,
                 user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
     }
 

@@ -27,6 +27,7 @@ import java.util.UUID;
 public class DiscoveryData implements Serializable {
     String deviceId;
     String username;
+    String fullName;
     String tenantDomain;
     String userStore;
     UUID challenge;
@@ -34,10 +35,11 @@ public class DiscoveryData implements Serializable {
     String authenticationUrl;
 
 
-    public DiscoveryData(String deviceId, String username, String tenantDomain, String userStore, UUID challenge,
+    public DiscoveryData(String deviceId, String username, String fullName, String tenantDomain, String userStore, UUID challenge,
                          String registrationUrl, String authenticationUrl) {
         this.deviceId = deviceId;
         this.username = username;
+        this.fullName = fullName;
         this.tenantDomain = tenantDomain;
         this.userStore = userStore;
         this.challenge = challenge;
