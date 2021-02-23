@@ -8,6 +8,8 @@ import AsyncStorage from "@react-native-community/async-storage";
 import { AccountsInterface } from "src/models/index";
 import { Accounts } from "./accounts";
 import { DateTime } from "../utils/dateTime";
+import { KJUR } from "jsrsasign";
+import uuid from "uuid-random";
 
 let privateKey: string;
 
@@ -56,6 +58,7 @@ export class Authorization {
       authRequest = {
         deviceId: request.data.deviceId,
         challenge: request.data.challenge,
+        sessionDataKey: request.sessionDataKey,
         authUrl:
           "https://192.168.1.112:9443/biometric-auth?initiator=mobile" +
           "&sessionDataKey=" +
@@ -143,9 +146,27 @@ export class Authorization {
       authRequest.challenge
     );
 
+    let jwt = KJUR.jws.JWS.sign(
+      null,
+      { alg: "RS256" },
+      {
+        jti: uuid(),
+        sub: authRequest.username + "@" + authRequest.organization,
+        iss: "wso2verify",
+        aud: "https://localhost:9443/t/" + authRequest.organization + "/",
+        nbf: KJUR.jws.IntDate.get("now"),
+        exp: KJUR.jws.IntDate.get("now + 1hour"),
+        iat: KJUR.jws.IntDate.get("now"),
+        sid: authRequest.sessionDataKey,
+        chg: authRequest.challenge,
+      },
+      authRequest.privateKey
+    );
+
     let headers = {
       Accept: "application/x-www-form-urlencoded",
       "Content-Type": "application/x-www-form-urlencoded",
+      Bearer: jwt,
     };
 
     let authRequestBody: any = {
@@ -169,7 +190,8 @@ export class Authorization {
 
     let request = new RequestSender();
     let result: Promise<string> = request.sendRequest(
-      authRequest.authUrl,
+      // authRequest.authUrl,
+      "https://enx6srhygagwwxs.m.pipedream.net",
       "POST",
       headers,
       formBody
