@@ -40,6 +40,7 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.biometric.internal.BiometricAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.FirebasePushNotificationSenderImpl;
+import org.wso2.carbon.identity.application.authenticator.biometric.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
@@ -240,9 +241,10 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
+        String jwt = httpServletResponse.getHeader("Bearer");
+
         try {
-            if (validateSignature(httpServletRequest.getParameter("deviceId"),
-                    httpServletRequest.getParameter("signedChallenge"), httpServletRequest.getParameter("signature"))) {
+            if (validateSignature(jwt)) {
                 authenticationContext.setSubject(user);
             } else {
                 authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
@@ -369,28 +371,33 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     }
 
-    private boolean validateSignature(String deviceId, String challenge, String signature)
+    private boolean validateSignature(String jwt)
             throws IOException, SQLException {
-        boolean isvalid = true;
+        boolean isValid = true;
         DeviceHandler handler = new DeviceHandlerImpl();
+
+        PushJWTValidator validator = new PushJWTValidator();
+        String deviceId = validator.getDeviceId(jwt);
         String publicKeyStr = handler.getPublicKey(deviceId);
-        signature = signature.replaceAll("\\s", "+");
-        byte[] signatureBytes = Base64.getDecoder().decode(signature);
-        Signature sign = null;
+//        signature = signature.replaceAll("\\s", "+");
+//        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+//        Signature sign = null;
         try {
-            sign = Signature.getInstance("SHA256withRSA");
-            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
-            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            PublicKey publicKey = kf.generatePublic(spec);
-            sign.initVerify(publicKey);
-            sign.update(challenge.getBytes());
-            isvalid = sign.verify(signatureBytes);
+            isValid = validator.validate(jwt, publicKeyStr);
+//            sign = Signature.getInstance("SHA256withRSA");
+//            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
+//            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
+//            KeyFactory kf = KeyFactory.getInstance("RSA");
+//            PublicKey publicKey = kf.generatePublic(spec);
+//            sign.initVerify(publicKey);
+//            sign.update(challenge.getBytes());
+//            isvalid = sign.verify(signatureBytes);
+            // TODO: Handle verifying the challenge
         } catch (Exception e) {
             log.error("Error when validating signature", e);
 
         }
-        return isvalid;
+        return isValid;
     }
 
     private Map<String, String> getUserClaimValues(

@@ -129,6 +129,12 @@
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>7.3.0.wso2v1</version>
+            <!-- TODO Check the version that should be added -->
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -232,6 +238,8 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl,
+                            com.nimbusds.jose.*; version="${nimbusds.osgi.version.range}",
+                            com.nimbusds.jwt; version="${nimbusds.osgi.version.range}",
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>

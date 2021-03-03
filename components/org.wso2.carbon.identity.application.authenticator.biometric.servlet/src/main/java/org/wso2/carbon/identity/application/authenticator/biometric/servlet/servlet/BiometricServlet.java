@@ -169,6 +169,7 @@ public class BiometricServlet extends HttpServlet {
 
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
+            // TODO: Get all the below parameters from JWT in header
             String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
             String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
             String status = request.getParameter("auth_status");
