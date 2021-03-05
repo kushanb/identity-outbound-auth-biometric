@@ -158,6 +158,7 @@ export class Authorization {
         exp: KJUR.jws.IntDate.get("now + 1hour"),
         iat: KJUR.jws.IntDate.get("now"),
         sid: authRequest.sessionDataKey,
+        aid: authRequest.deviceId,
         chg: authRequest.challenge,
       },
       authRequest.privateKey
