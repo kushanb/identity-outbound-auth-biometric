@@ -241,7 +241,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
-        String jwt = httpServletResponse.getHeader("Bearer");
+//        String jwt = httpServletResponse.getHeader("Bearer");
+        String jwt = httpServletRequest.getParameter("token");
 
         try {
             if (validateSignature(jwt)) {

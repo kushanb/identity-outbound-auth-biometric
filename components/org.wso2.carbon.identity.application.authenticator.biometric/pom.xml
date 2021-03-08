@@ -238,6 +238,7 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.biometric.validator
                             com.nimbusds.jose.*; version="${nimbusds.osgi.version.range}",
                             com.nimbusds.jwt; version="${nimbusds.osgi.version.range}",
                         </Import-Package>
@@ -250,7 +251,8 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.cache,
                             org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
-                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl
+                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.biometric.validator
                         </Export-Package>
                     </instructions>
                 </configuration>

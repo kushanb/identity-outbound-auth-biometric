@@ -38,7 +38,7 @@ public interface BiometricDataStore {
      * Adds a new record of session data key against signed challenge to the biometric data store.
      */
     void addBiometricData(String sessionDataKey, String signedChallenge, String authStatus, String signature,
-                          String deviceId);
+                          String deviceId, String token);
 
     /**
      * Removes the record with the given session data key in biometric data store.
@@ -48,4 +48,6 @@ public interface BiometricDataStore {
     String getSignature(String sessionDataKey);
 
     String getDeviceId(String sessionDataKey);
+
+    String getToken(String sessionDataKey);
 }

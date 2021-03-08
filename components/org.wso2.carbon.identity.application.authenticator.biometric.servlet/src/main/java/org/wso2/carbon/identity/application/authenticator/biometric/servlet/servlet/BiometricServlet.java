@@ -134,6 +134,7 @@ public class BiometricServlet extends HttpServlet {
         String authStatus = biometricDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
         String signature = biometricDataStoreInstance.getSignature(sessionDataKeyWeb);
         String deviceId = biometricDataStoreInstance.getDeviceId(sessionDataKeyWeb);
+        String token = biometricDataStoreInstance.getToken(sessionDataKeyWeb);
         if (StringUtils.isEmpty(signedChallengeExtracted)) {
             if (log.isDebugEnabled()) {
                 log.debug("Signed challenge sent from the mobile application is null.");
@@ -148,6 +149,7 @@ public class BiometricServlet extends HttpServlet {
             waitResponse.setAuthStatus(authStatus);
             waitResponse.setSignature(signature);
             waitResponse.setDeviceId(deviceId);
+            waitResponse.setToken(token);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
@@ -175,8 +177,9 @@ public class BiometricServlet extends HttpServlet {
             String status = request.getParameter("auth_status");
             String signature = request.getParameter("signature");
             String deviceId = request.getParameter("deviceId");
+            String token = request.getParameter("jwt");
             biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile, status,
-                    signature, deviceId);
+                    signature, deviceId, token);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile +

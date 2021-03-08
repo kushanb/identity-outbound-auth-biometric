@@ -29,6 +29,7 @@ public class WaitStatus {
     private String authStatus;
     private String signature;
     private String deviceId;
+    private String token;
 
     public String getDeviceId() {
         return deviceId;
@@ -80,5 +81,13 @@ public class WaitStatus {
 
     public void setAuthStatus(String authStatus) {
         this.authStatus = authStatus;
+    }
+
+    public String getToken() { return token; }
+
+    public void setToken(String token) {
+
+        this.token = token;
+
     }
 }

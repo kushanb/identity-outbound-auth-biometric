@@ -65,6 +65,7 @@
     <input type="hidden" id="deviceId" name="deviceId"/>
     <input type="hidden" id="authstatus" name="authstatus"/>
     <input type="hidden" id="signature" name="signature"/>
+    <input type="hidden" id="token" name="token"/>
     <label for="sessionDataKey">sessionDataKey</label><input id="sessionDataKey" name="sessionDataKey">
     <label for="signedChallenge">signedChallenge</label><input id="signedChallenge" name="signedChallenge">
 </form>
@@ -130,6 +131,7 @@
                 document.getElementById("authstatus").value = (res.authStatus);
                 document.getElementById("signature").value = (res.signature);
                 document.getElementById("deviceId").value = (res.deviceId);
+                document.getElementById("token").value = (res.token);
                 continueAuthentication(res);
             } else {
                 checkWaitStatus();
