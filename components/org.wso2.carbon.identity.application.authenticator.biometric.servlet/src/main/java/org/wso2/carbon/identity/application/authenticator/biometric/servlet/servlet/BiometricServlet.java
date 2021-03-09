@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.biometric.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
@@ -135,7 +136,8 @@ public class BiometricServlet extends HttpServlet {
         String signature = biometricDataStoreInstance.getSignature(sessionDataKeyWeb);
         String deviceId = biometricDataStoreInstance.getDeviceId(sessionDataKeyWeb);
         String token = biometricDataStoreInstance.getToken(sessionDataKeyWeb);
-        if (StringUtils.isEmpty(signedChallengeExtracted)) {
+        // TODO: Validate if JWT is available instead
+        if (StringUtils.isEmpty(token)) {
             if (log.isDebugEnabled()) {
                 log.debug("Signed challenge sent from the mobile application is null.");
             }
@@ -143,12 +145,12 @@ public class BiometricServlet extends HttpServlet {
         } else {
             // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
-            request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
+//            request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
             waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
             waitResponse.setChallenge(signedChallengeExtracted);
             waitResponse.setAuthStatus(authStatus);
-            waitResponse.setSignature(signature);
-            waitResponse.setDeviceId(deviceId);
+//            waitResponse.setSignature(signature);
+//            waitResponse.setDeviceId(deviceId);
             waitResponse.setToken(token);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
@@ -168,22 +170,24 @@ public class BiometricServlet extends HttpServlet {
                 request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received session data key and/or signed" +
                     " challenge is null.");
-
+        // TODO: Do validations only for non jwt params
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
             // TODO: Get all the below parameters from JWT in header
-            String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-            String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
-            String status = request.getParameter("auth_status");
-            String signature = request.getParameter("signature");
-            String deviceId = request.getParameter("deviceId");
+            PushJWTValidator validator = new PushJWTValidator();
+
+////            String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
+//            String challengeMobile = null; //request.getParameter(BiometricServletConstants.CHALLENGE);
+////            String status = request.getParameter("auth_status");
+//            String signature = null; //request.getParameter("signature");
+//            String deviceId = null; //request.getParameter("deviceId");
             String token = request.getParameter("jwt");
-            biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile, status,
-                    signature, deviceId, token);
+            String sessionDataKeyMobile = validator.getSessionDataKey(token);
+            String status = validator.getAuthStatus(token);
+            biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, status, token);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
-                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile +
-                        "\n Signed challenge received from the mobile application: " + challengeMobile);
+                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
             }
         }
     }

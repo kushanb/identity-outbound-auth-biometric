@@ -51,13 +51,12 @@ public class BiometricDataStoreImpl implements BiometricDataStore, Serializable 
     }
 
     @Override
-    public void addBiometricData(String sessionDataKey, String signedChallenge, String authStatus,
-                                 String signature, String deviceId, String token) {
+    public void addBiometricData(String sessionDataKey, String authStatus, String token) {
 
-        biometricDataStore.put(sessionDataKey, signedChallenge);
+//        biometricDataStore.put(sessionDataKey, signedChallenge);
         biometricDataStore.put(sessionDataKey + "status", authStatus);
-        biometricDataStore.put(sessionDataKey + "signature", signature);
-        biometricDataStore.put(sessionDataKey + "deviceId", deviceId);
+//        biometricDataStore.put(sessionDataKey + "signature", signature);
+//        biometricDataStore.put(sessionDataKey + "deviceId", deviceId);
         biometricDataStore.put(sessionDataKey + "token", token);
     }
 

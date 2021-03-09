@@ -55,7 +55,7 @@ public class PushJWTValidator {
 
     private static final String DOT_SEPARATOR = ".";
 
-    public boolean validate(String code, String publicKey)
+    public boolean validate(String code, String publicKey, String challenge)
             throws IdentityPushException {
 
         if (!isJWT(code)) {
@@ -70,6 +70,10 @@ public class PushJWTValidator {
             }
             if (!validateSignature(publicKey, signedJWT)) {
                 return false;
+            } else {
+                if(!claimsSet.getClaim("chg").equals(challenge)) {
+                    return false;
+                }
             }
             // TODO: Do the validations below
             if (!checkExpirationTime(claimsSet.getExpirationTime())) {
@@ -135,6 +139,44 @@ public class PushJWTValidator {
                 JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
                 if(claimSet != null) {
                     return (String) claimSet.getClaim("aid");
+                } else {
+                    return null;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getSessionDataKey(String jwt) {
+        try {
+            if(!isJWT(jwt)) {
+                return null;
+            } else {
+                SignedJWT signedJWT = SignedJWT.parse(jwt);
+                JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
+                if(claimSet != null) {
+                    return (String) claimSet.getClaim("sid");
+                } else {
+                    return null;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getAuthStatus(String jwt) {
+        try {
+            if(!isJWT(jwt)) {
+                return null;
+            } else {
+                SignedJWT signedJWT = SignedJWT.parse(jwt);
+                JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
+                if(claimSet != null) {
+                    return (String) claimSet.getClaim("res");
                 } else {
                     return null;
                 }

@@ -101,13 +101,14 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             sessionDataKey = urlParams.get('sessionDataKey');
+            challenge = urlParams.get('challenge');
             $.ajax(biometricEndpointWithQueryParams + sessionDataKey, {
                 async: false,
                 cache : false,
                 method: GET,
                 // todo: check whether there are any problems when same get req is sent over n over again, will there be cache issues? any solutions?-Future Improvement-Include in DOCs
                 success: function (res) {
-                    handleStatusResponse(res);
+                    handleStatusResponse(res, challenge);
                 },
                 error: function () {
 
@@ -120,14 +121,13 @@
             });
         }
 
-        function handleStatusResponse(res) {
+        function handleStatusResponse(res, challenge) {
 
             if ((res.status) === "<%=BiometricAuthenticatorConstants.COMPLETED%>") {
-                signedChallenge = (res.signedChallenge);
                 authStatus = (res.authStatus);
                 console.log(res);
                 document.getElementById("sessionDataKey").value = sessionDataKey;
-                document.getElementById("signedChallenge").value = signedChallenge;
+                document.getElementById("signedChallenge").value = challenge;
                 document.getElementById("authstatus").value = (res.authStatus);
                 document.getElementById("signature").value = (res.signature);
                 document.getElementById("deviceId").value = (res.deviceId);

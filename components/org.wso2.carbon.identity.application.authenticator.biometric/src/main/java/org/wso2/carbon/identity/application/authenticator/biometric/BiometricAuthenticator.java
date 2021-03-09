@@ -243,9 +243,10 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
 //        String jwt = httpServletResponse.getHeader("Bearer");
         String jwt = httpServletRequest.getParameter("token");
+        String serverChallenge = httpServletRequest.getParameter("signedChallenge");
 
         try {
-            if (validateSignature(jwt)) {
+            if (validateSignature(jwt, serverChallenge)) {
                 authenticationContext.setSubject(user);
             } else {
                 authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
@@ -314,7 +315,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String serviceProviderName = context.getServiceProviderName();
 
         String message = username + " is trying to log into " + serviceProviderName + " at " + hostname;
-
+        // TODO: Use a better message for the push notification
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
@@ -363,8 +364,11 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         }
 
         try {
-            String waitPage = BiometricAuthenticatorConstants.WAIT_PAGE + "?sessionDataKey=" + URLEncoder.encode(
-                    sessionDataKey, StandardCharsets.UTF_8.name());
+            String waitPage = BiometricAuthenticatorConstants.WAIT_PAGE
+                    + "?sessionDataKey="
+                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
+                    + "&challenge="
+                    + URLEncoder.encode(String.valueOf(challenge), StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             log.error("Error when trying to redirect to wait.jsp page", e);
@@ -372,11 +376,12 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     }
 
-    private boolean validateSignature(String jwt)
+    private boolean validateSignature(String jwt, String challenge)
             throws IOException, SQLException {
-        boolean isValid = true;
+        boolean isValid = false;
         DeviceHandler handler = new DeviceHandlerImpl();
 
+        // TODO: move public key retrieval to validator
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
         String publicKeyStr = handler.getPublicKey(deviceId);
@@ -384,7 +389,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 //        byte[] signatureBytes = Base64.getDecoder().decode(signature);
 //        Signature sign = null;
         try {
-            isValid = validator.validate(jwt, publicKeyStr);
+            isValid = validator.validate(jwt, publicKeyStr, challenge);
 //            sign = Signature.getInstance("SHA256withRSA");
 //            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
 //            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
