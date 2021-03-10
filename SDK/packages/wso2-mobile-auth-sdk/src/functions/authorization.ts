@@ -158,8 +158,9 @@ export class Authorization {
         exp: KJUR.jws.IntDate.get("now + 1hour"),
         iat: KJUR.jws.IntDate.get("now"),
         sid: authRequest.sessionDataKey,
-        aid: authRequest.deviceId,
+        did: authRequest.deviceId,
         chg: authRequest.challenge,
+        res: response,
       },
       authRequest.privateKey
     );
@@ -174,6 +175,7 @@ export class Authorization {
       auth_status: response,
       signature: signature,
       deviceId: authRequest.deviceId,
+      jwt: jwt,
     };
 
     let formBody = Object.keys(authRequestBody)
