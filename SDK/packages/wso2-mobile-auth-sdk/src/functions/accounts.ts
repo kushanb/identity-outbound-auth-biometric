@@ -79,10 +79,11 @@ export class Accounts {
     console.log("Discovery Data Processed");
 
     let keypair: any = Crypto.generateKeypair();
+    let signatureString = regRequest.challenge + "." + fcmToken;
     console.log("Keypair:", keypair);
     let signedChallenege: string = Crypto.signChallenge(
       keypair.prvKey,
-      regRequest.challenge
+      signatureString
     );
 
     // Store data for later use
