@@ -77,7 +77,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         if (log.isDebugEnabled()) {
             log.debug("Verifying digital signature");
         }
-        if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPublicKey(), cacheEntry)) {
+        if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
+                registrationRequest.getPublicKey(), cacheEntry)) {
             throw new BiometricdeviceHandlerServerException("Could not verify source");
         }
         if (!cacheEntry.isRegistered()) {
@@ -197,7 +198,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return user;
     }
 
-    private boolean verifySignature(String signature, String publicKeyStr,
+    private boolean verifySignature(String signature, String pushId, String publicKeyStr,
                                     RegistrationRequestChallengeCacheEntry cacheEntry)
             throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
 
@@ -208,7 +209,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         KeyFactory kf = KeyFactory.getInstance("RSA");
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
-        sign.update(cacheEntry.getChallenge().toString().getBytes());
+        sign.update((cacheEntry.getChallenge().toString() + "." + pushId).getBytes());
         return sign.verify(signatureBytes);
     }
 

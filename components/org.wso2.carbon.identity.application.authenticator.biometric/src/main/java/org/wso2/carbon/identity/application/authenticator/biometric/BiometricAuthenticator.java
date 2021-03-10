@@ -398,7 +398,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 //            sign.initVerify(publicKey);
 //            sign.update(challenge.getBytes());
 //            isvalid = sign.verify(signatureBytes);
-            // TODO: Handle verifying the challenge
         } catch (Exception e) {
             log.error("Error when validating signature", e);
 
