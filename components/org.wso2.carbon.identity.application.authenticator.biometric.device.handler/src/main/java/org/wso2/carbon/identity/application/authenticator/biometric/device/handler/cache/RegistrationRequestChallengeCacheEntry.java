@@ -28,16 +28,15 @@ import java.util.UUID;
 public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
     private UUID challenge;
     private String username;
-    private String fullName;
     private String userStore;
+    // TODO: Remove userstore attribute
     private String tenantDomain;
     private boolean registered;
 
-    public RegistrationRequestChallengeCacheEntry(UUID challenge, String username, String fullName,
-                                                  String userStore, String tenantDomain, boolean registered) {
+    public RegistrationRequestChallengeCacheEntry(UUID challenge, String username, String userStore,
+                                                  String tenantDomain, boolean registered) {
         this.challenge = challenge;
         this.username = username;
-        this.fullName = fullName;
         this.userStore = userStore;
         this.tenantDomain = tenantDomain;
         this.registered = registered;
@@ -57,14 +56,6 @@ public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
     }
 
     public String getUserStore() {

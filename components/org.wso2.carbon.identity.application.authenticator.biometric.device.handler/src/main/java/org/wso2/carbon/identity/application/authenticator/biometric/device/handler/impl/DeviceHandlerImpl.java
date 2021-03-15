@@ -151,17 +151,21 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         }
         String deviceId = UUID.randomUUID().toString();
         User user = getAuthenticatedUser();
-        tenantDomain = user.getTenantDomain();
+        String firstName = "John";
+        String lastName = "Doe";
+        tenantDomain = user.getTenantDomain(); // TODO: remove params above as required
+        String host = "https://192.168.1.112:9443";
+        String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
+        String registrationEndpoint = "/biometricdevice";
+        String removeDeviceEndpoint = "/push-auth/devices/remove";
+        String authenticationEndpoint = "/biometric-auth";
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://192.168.1.112:9443" +  "/t/" +
-                user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
-        String authUrl = "https://192.168.1.112:9443/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-                        user.getUserName(), "John Smith", user.getUserStoreDomain(),
+                        user.getUserName(), user.getUserStoreDomain(),
                         user.getTenantDomain(), false));
-        return new DiscoveryData(deviceId, user.getUserName(), "John Smith", tenantDomain,
-                user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
+        return new DiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host, basePath,
+                registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
     }
 
     /*

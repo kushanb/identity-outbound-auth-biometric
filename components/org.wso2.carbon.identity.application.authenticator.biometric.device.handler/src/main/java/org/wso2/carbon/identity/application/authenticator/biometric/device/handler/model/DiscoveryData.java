@@ -27,24 +27,30 @@ import java.util.UUID;
 public class DiscoveryData implements Serializable {
     String deviceId;
     String username;
-    String fullName;
+    String firstName;
+    String lastName;
     String tenantDomain;
-    String userStore;
+    String host;
+    String basePath;
+    String registrationEndpoint;
+    String removeDeviceEndpoint;
+    String authenticationEndpoint;
     UUID challenge;
-    String registrationUrl;
-    String authenticationUrl;
 
-
-    public DiscoveryData(String deviceId, String username, String fullName, String tenantDomain, String userStore, UUID challenge,
-                         String registrationUrl, String authenticationUrl) {
+    public DiscoveryData(String deviceId, String username, String firstName, String lastName, String tenantDomain,
+                         String host, String basePath, String registrationEndpoint, String removeDeviceEndpoint,
+                         String authenticationEndpoint, UUID challenge) {
         this.deviceId = deviceId;
         this.username = username;
-        this.fullName = fullName;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.tenantDomain = tenantDomain;
-        this.userStore = userStore;
+        this.host = host;
+        this.basePath = basePath;
+        this.registrationEndpoint = registrationEndpoint;
+        this.removeDeviceEndpoint = removeDeviceEndpoint;
+        this.authenticationEndpoint = authenticationEndpoint;
         this.challenge = challenge;
-        this.registrationUrl = registrationUrl;
-        this.authenticationUrl = authenticationUrl;
     }
 
     public DiscoveryData() {
@@ -74,14 +80,6 @@ public class DiscoveryData implements Serializable {
         this.tenantDomain = tenantDomain;
     }
 
-    public String getUserStore() {
-        return userStore;
-    }
-
-    public void setUserStore(String userStore) {
-        this.userStore = userStore;
-    }
-
     public UUID getChallenge() {
         return challenge;
     }
@@ -90,19 +88,59 @@ public class DiscoveryData implements Serializable {
         this.challenge = challenge;
     }
 
-    public String getRegistrationUrl() {
-        return registrationUrl;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setRegistrationUrl(String registrationUrl) {
-        this.registrationUrl = registrationUrl;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getAuthenticationUrl() {
-        return authenticationUrl;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setAuthenticationUrl(String authenticationUrl) {
-        this.authenticationUrl = authenticationUrl;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public String getBasePath() {
+        return basePath;
+    }
+
+    public void setBasePath(String basePath) {
+        this.basePath = basePath;
+    }
+
+    public String getRegistrationEndpoint() {
+        return registrationEndpoint;
+    }
+
+    public void setRegistrationEndpoint(String registrationEndpoint) {
+        this.registrationEndpoint = registrationEndpoint;
+    }
+
+    public String getRemoveDeviceEndpoint() {
+        return removeDeviceEndpoint;
+    }
+
+    public void setRemoveDeviceEndpoint(String removeDeviceEndpoint) {
+        this.removeDeviceEndpoint = removeDeviceEndpoint;
+    }
+
+    public String getAuthenticationEndpoint() {
+        return authenticationEndpoint;
+    }
+
+    public void setAuthenticationEndpoint(String authenticationEndpoint) {
+        this.authenticationEndpoint = authenticationEndpoint;
     }
 }
