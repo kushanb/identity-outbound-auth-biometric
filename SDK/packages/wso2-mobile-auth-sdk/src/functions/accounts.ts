@@ -79,7 +79,7 @@ export class Accounts {
     console.log("Discovery Data Processed");
 
     let keypair: any = Crypto.generateKeypair();
-    let signatureString = regRequest.challenge + "." + fcmToken;
+    let signatureString = regRequest.chg + "." + fcmToken;
     console.log("Keypair:", keypair);
     let signedChallenege: string = Crypto.signChallenge(
       keypair.prvKey,
@@ -98,6 +98,7 @@ export class Accounts {
       .replace(/(\r\n|\n|\r)/gm, "");
 
     let request: RegistrationRequestInterface;
+    // TODO: Check why this is done and correct it.
     request = {
       id: discoveryData.id,
       pushID: fcmToken,
@@ -108,6 +109,7 @@ export class Accounts {
     request.deviceName = DeviceInformation.getDeviceName();
     request.model = DeviceInformation.getDeviceModel();
 
+    // TODO: Has code duplication from above scenario
     let regRequestBody: any = {
       id: request.id,
       model: request.model,
@@ -133,9 +135,14 @@ export class Accounts {
     };
 
     let newRequest: RequestSender = new RequestSender();
+    let registrationUrl =
+      discoveryData.host +
+      discoveryData.basePath +
+      discoveryData.registrationEndpoint;
+
     return newRequest
       .sendRequest(
-        discoveryData.registrationUrl,
+        registrationUrl,
         requestMethod,
         headers,
         JSON.stringify(regRequestBody)
@@ -145,15 +152,18 @@ export class Accounts {
         if (result == "OK") {
           account = {
             deviceID: request.id,
-            username: regRequest.username,
-            displayName: regRequest.username,
-            tenantDomain: regRequest.tennantDomain,
-            userstore: regRequest.userStoreDomain,
-            authURL: regRequest.authenticationUrl,
+            username: discoveryData.username,
+            firstName: discoveryData.firstName,
+            lastName: discoveryData.lastName,
+            tenantDomain: discoveryData.tenantDomain,
+            host: discoveryData.host,
+            basePath: discoveryData.basePath,
+            authenticationEndpoint: discoveryData.authenticationEndpoint,
+            removeDeviceEndpoint: discoveryData.removeDeviceEndpoint,
             privateKey: keypair.prvKey,
           };
         } else {
-          account = { deviceID: regRequest.id };
+          account = { deviceID: request.id };
         }
 
         return JSON.stringify({ res: result, data: account });
@@ -241,38 +251,45 @@ export class Accounts {
     // TODO: Change structure once the API on the IS is corrected
 
     console.log("Process Discovery data");
-    console.log("Reg Request: " + regRequest.id);
-    console.log("Reg Request ID: " + JSON.stringify(regRequest.username));
+    console.log("Reg Request: " + regRequest.did);
+    console.log("Reg Request ID: " + JSON.stringify(regRequest.un));
 
     let discoveryData: DiscoveryDataInterface;
 
     if (
-      regRequest.id &&
-      regRequest.username &&
-      regRequest.registrationUrl &&
-      regRequest.authenticationUrl &&
-      regRequest.challenge
+      regRequest.did &&
+      regRequest.un &&
+      regRequest.hst &&
+      regRequest.bp &&
+      regRequest.chg
     ) {
       discoveryData = {
-        id: regRequest.id,
-        username: regRequest.username,
-        registrationUrl: regRequest.registrationUrl,
-        authenticationUrl: regRequest.authenticationUrl,
-        challenge: regRequest.challenge,
+        id: regRequest.did,
+        username: regRequest.un,
+        host: regRequest.hst,
+        basePath: regRequest.bp,
+        registrationEndpoint: regRequest.re,
+        authenticationEndpoint: regRequest.ae,
+        removeDeviceEndpoint: regRequest.rde,
+        challenge: regRequest.chg,
       };
     } else {
       throw new Error("One or more required parameters missing");
     }
 
-    if (regRequest.tenantDomain) {
-      discoveryData.tenantDomain = regRequest.tenantDomain;
+    if (regRequest.td) {
+      discoveryData.tenantDomain = regRequest.td;
     }
 
-    if (regRequest.userstoreDomain) {
-      discoveryData.userstoreDomain = regRequest.userstoreDomain;
+    if (regRequest.fn) {
+      discoveryData.firstName = regRequest.fn;
     }
 
-    console.log("Discovery data test: " + discoveryData.challenge);
+    if (regRequest.ln) {
+      discoveryData.lastName = regRequest.ln;
+    }
+
+    console.log("Discovery data test: " + JSON.stringify(discoveryData));
     return discoveryData;
   }
 

@@ -4,9 +4,12 @@
 export interface AccountsInterface {
   deviceID: string;
   username?: string;
-  displayName?: string;
+  firstName?: string;
+  lastName?: string;
   tenantDomain?: string;
-  userstore?: string;
-  authURL?: string;
+  host?: string;
+  basePath?: string;
+  authenticationEndpoint?: string;
+  removeDeviceEndpoint?: string;
   privateKey?: string;
 }
