@@ -122,6 +122,7 @@ public class PushJWTValidator {
         }
     }
 
+    // TODO: Have a common method to get the jwt claims. Call that method with the claim name as an argument
     public String getDeviceId(String jwt) {
         try {
             if(!isJWT(jwt)){
@@ -130,7 +131,7 @@ public class PushJWTValidator {
                 SignedJWT signedJWT = SignedJWT.parse(jwt);
                 JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
                 if(claimSet != null) {
-                    return (String) claimSet.getClaim("aid");
+                    return (String) claimSet.getClaim("did");
                 } else {
                     return null;
                 }
