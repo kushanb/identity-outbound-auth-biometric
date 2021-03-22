@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAut
 import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextCache;
 import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextcacheKey;
+import org.wso2.carbon.identity.application.authenticator.biometric.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.biometric.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
@@ -185,7 +186,9 @@ public class BiometricServlet extends HttpServlet {
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
                     (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
 
-            context.setProperty("authResponse", token);
+            AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty("authData");
+            authDataDTO.setAuthToken(token);
+            context.setProperty("authData", authDataDTO);
             AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
                     new AuthContextCacheEntry(context));
 

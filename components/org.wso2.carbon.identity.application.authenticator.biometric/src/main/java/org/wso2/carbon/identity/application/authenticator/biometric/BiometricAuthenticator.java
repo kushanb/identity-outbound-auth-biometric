@@ -38,6 +38,8 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
+import org.wso2.carbon.identity.application.authenticator.biometric.dto.AuthDataDTO;
+import org.wso2.carbon.identity.application.authenticator.biometric.dto.impl.AuthDataDTOImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.internal.BiometricAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.FirebasePushNotificationSenderImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.validator.PushJWTValidator;
@@ -123,6 +125,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 array.add(object);
             }
 
+            AuthDataDTO authDataDTO = new AuthDataDTOImpl();
+            context.setProperty("authData", authDataDTO);
             AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
                     new AuthContextCacheEntry(context));
 
@@ -241,18 +245,15 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
-//        String jwt = httpServletResponse.getHeader("Bearer");
-//        String jwt = httpServletRequest.getParameter("token");
-//        String serverChallenge = httpServletRequest.getParameter("signedChallenge");
-
         AuthenticationContext sessionContext = AuthContextCache.getInstance()
                 .getValueFromCacheByRequestId(new AuthContextcacheKey(
                         httpServletRequest.getParameter("sessionDataKey"))
                 ).getAuthenticationContext();
 
-        String jwt = (String) sessionContext.getProperty("authResponse");
-        String serverChallenge = (String) sessionContext
-                .getProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE);
+        AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext.getProperty("authData");
+
+        String jwt = authDataDTO.getAuthToken();
+        String serverChallenge = authDataDTO.getChallenge();
 
         try {
             if (validateSignature(jwt, serverChallenge)) {
@@ -328,7 +329,9 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
-        context.setProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
+        AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty("authData");
+        authDataDTO.setChallenge(randomChallenge);
+        context.setProperty("authData", authDataDTO);
         AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(key),
                 new AuthContextCacheEntry(context));
 

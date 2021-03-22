@@ -120,6 +120,8 @@
                             org.osgi.service.http;version="[1.2,2)",
                             org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)",
                             org.wso2.carbon.identity.application.authenticator.biometric.validator;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.dto;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.dto.impl;version="[1.0,2)",
                             org.wso2.carbon.identity.application.authenticator.biometric.cache;version="[1.0,2)",
                             org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="[1.0,2)",
                             org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;version="[1.0,2)",
