@@ -245,7 +245,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
-        AuthenticationContext sessionContext = AuthContextCache.getInstance()
+        AuthenticationContext sessionContext = AuthContextCache
+                .getInstance()
                 .getValueFromCacheByRequestId(new AuthContextcacheKey(
                         httpServletRequest.getParameter("sessionDataKey"))
                 ).getAuthenticationContext();
@@ -318,7 +319,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(BiometricAuthenticatorConstants.SERVER_KEY);
         String fcmUrl = authenticatorProperties.get(BiometricAuthenticatorConstants.FCM_URL);
-//        String hostname = IdentityUtil.getHostName();
         String hostname = request.getRemoteAddr();
 
 
@@ -337,13 +337,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
         String pushId = device.getPushId();
 
-//        URL whatismyip = new URL("http://checkip.amazonaws.com");
-//        BufferedReader in = new BufferedReader(new InputStreamReader(
-//                whatismyip.openStream()));
-//
-//        String userIp = in.readLine(); //you get the IP as a String
-
-
         Map<String, String> userClaims = null;
         try {
             userClaims = getUserClaimValues(user, context);
@@ -355,10 +348,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 userClaims.get(BiometricAuthenticatorConstants.FIRST_NAME_CLAIM) + " " +
                 userClaims.get(BiometricAuthenticatorConstants.LAST_NAME_CLAIM);
         String organization = user.getTenantDomain();
-
-//        String fullName = "John Doe";
-//        String organization = "WSO2";
-//        String ipAddr = request;
 
         String userAgentString = request.getHeader("user-agent");
         Parser uaParser = new Parser();
@@ -399,19 +388,9 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
         String publicKeyStr = handler.getPublicKey(deviceId);
-//        signature = signature.replaceAll("\\s", "+");
-//        byte[] signatureBytes = Base64.getDecoder().decode(signature);
-//        Signature sign = null;
+
         try {
             isValid = validator.validate(jwt, publicKeyStr, challenge);
-//            sign = Signature.getInstance("SHA256withRSA");
-//            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
-//            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-//            KeyFactory kf = KeyFactory.getInstance("RSA");
-//            PublicKey publicKey = kf.generatePublic(spec);
-//            sign.initVerify(publicKey);
-//            sign.update(challenge.getBytes());
-//            isvalid = sign.verify(signatureBytes);
         } catch (Exception e) {
             log.error("Error when validating signature", e);
 
@@ -457,7 +436,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 String tenantDomain = authenticatedUser.getTenantDomain();
                 int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
                 RealmService realmService = BiometricAuthenticatorServiceComponent.getRealmService();
-//                RealmService realmService = null;// = (RealmService) context.getOSGiService(RealmService.class, null);
                 userRealm = realmService.getTenantUserRealm(tenantId);
             }
         } catch (UserStoreException e) {

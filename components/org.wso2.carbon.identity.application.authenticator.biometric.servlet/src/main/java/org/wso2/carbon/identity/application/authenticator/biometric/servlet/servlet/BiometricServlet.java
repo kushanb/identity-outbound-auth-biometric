@@ -138,8 +138,6 @@ public class BiometricServlet extends HttpServlet {
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String signedChallengeExtracted = biometricDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
         String authStatus = biometricDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
-        String signature = biometricDataStoreInstance.getSignature(sessionDataKeyWeb);
-        String deviceId = biometricDataStoreInstance.getDeviceId(sessionDataKeyWeb);
         String token = biometricDataStoreInstance.getToken(sessionDataKeyWeb);
         // TODO: Validate if JWT is available instead
         if (StringUtils.isEmpty(token)) {
@@ -150,12 +148,9 @@ public class BiometricServlet extends HttpServlet {
         } else {
             // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
-//            request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
             waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
             waitResponse.setChallenge(signedChallengeExtracted);
             waitResponse.setAuthStatus(authStatus);
-//            waitResponse.setSignature(signature);
-//            waitResponse.setDeviceId(deviceId);
             waitResponse.setToken(token);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
@@ -171,8 +166,7 @@ public class BiometricServlet extends HttpServlet {
     }
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY) &&
-                request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
+        if (!(request.getParameterMap().containsKey("jwt"))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received session data key and/or signed" +
                     " challenge is null.");
         // TODO: Do validations to check if JWT is available
