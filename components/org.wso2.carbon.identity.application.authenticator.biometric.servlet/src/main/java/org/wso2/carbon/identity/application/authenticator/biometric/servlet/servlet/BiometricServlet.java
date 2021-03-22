@@ -23,8 +23,12 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextCache;
+import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextCacheEntry;
+import org.wso2.carbon.identity.application.authenticator.biometric.cache.AuthContextcacheKey;
 import org.wso2.carbon.identity.application.authenticator.biometric.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
@@ -170,18 +174,21 @@ public class BiometricServlet extends HttpServlet {
                 request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received session data key and/or signed" +
                     " challenge is null.");
-        // TODO: Do validations only for non jwt params
+        // TODO: Do validations to check if JWT is available
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
             // TODO: Get all the below parameters from JWT in header
             PushJWTValidator validator = new PushJWTValidator();
-
-////            String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-//            String challengeMobile = null; //request.getParameter(BiometricServletConstants.CHALLENGE);
-////            String status = request.getParameter("auth_status");
-//            String signature = null; //request.getParameter("signature");
-//            String deviceId = null; //request.getParameter("deviceId");
             String token = request.getParameter("jwt");
+            String sessionDataKey = validator.getSessionDataKey(token);
+
+            AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
+                    (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
+
+            context.setProperty("authResponse", token);
+            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
+                    new AuthContextCacheEntry(context));
+
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
             String status = validator.getAuthStatus(token);
             biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, status, token);

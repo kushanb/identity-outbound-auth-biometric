@@ -242,8 +242,17 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
 //        String jwt = httpServletResponse.getHeader("Bearer");
-        String jwt = httpServletRequest.getParameter("token");
-        String serverChallenge = httpServletRequest.getParameter("signedChallenge");
+//        String jwt = httpServletRequest.getParameter("token");
+//        String serverChallenge = httpServletRequest.getParameter("signedChallenge");
+
+        AuthenticationContext sessionContext = AuthContextCache.getInstance()
+                .getValueFromCacheByRequestId(new AuthContextcacheKey(
+                        httpServletRequest.getParameter("sessionDataKey"))
+                ).getAuthenticationContext();
+
+        String jwt = (String) sessionContext.getProperty("authResponse");
+        String serverChallenge = (String) sessionContext
+                .getProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE);
 
         try {
             if (validateSignature(jwt, serverChallenge)) {
@@ -320,6 +329,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
         context.setProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
+        AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(key),
+                new AuthContextCacheEntry(context));
 
         String pushId = device.getPushId();
 
