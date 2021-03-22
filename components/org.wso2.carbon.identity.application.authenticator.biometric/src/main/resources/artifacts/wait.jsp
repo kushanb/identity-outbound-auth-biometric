@@ -123,34 +123,24 @@
 
         function handleStatusResponse(res, challenge) {
 
-            if ((res.status) === "<%=BiometricAuthenticatorConstants.COMPLETED%>") {
-                authStatus = (res.authStatus);
-                console.log(res);
-                document.getElementById("sessionDataKey").value = sessionDataKey;
-                document.getElementById("signedChallenge").value = challenge;
-                document.getElementById("authstatus").value = (res.authStatus);
-                document.getElementById("signature").value = (res.signature);
-                document.getElementById("deviceId").value = (res.deviceId);
-                document.getElementById("token").value = (res.token);
-                continueAuthentication(res);
-            } else {
-                checkWaitStatus();
-            }
-        }
-
-        function continueAuthentication(res) {
-                console.log("Continuing Auth request");
-                console.log(res);
-                if((res.authStatus) === "DENIED"){
-                    window.clearInterval(intervalListener);
-                    window.location.replace("/authenticationendpoint/retry.do?status=Authentication Denied!&statusMsg=Authentication was denied from the mobile app");
-                    //authenticationendpoint
-                } else {
-                    window.clearInterval(intervalListener);
-                    document.getElementById("toCommonAuth").submit();
+                    if ((res.status) === "<%=BiometricAuthenticatorConstants.COMPLETED%>") {
+                        authStatus = (res.authStatus);
+                        console.log(res);
+                        document.getElementById("sessionDataKey").value = sessionDataKey;
+                        console.log("Token value saved as: " + document.getElementById("token").value);
+                        continueAuthentication(res);
+                    } else {
+                        checkWaitStatus();
+                    }
                 }
 
-            }
+                function continueAuthentication(res) {
+                        console.log("Continuing Auth request");
+                        console.log(res);
+
+                        window.clearInterval(intervalListener);
+                        document.getElementById("toCommonAuth").submit();
+                    }
 
     });
 </script>

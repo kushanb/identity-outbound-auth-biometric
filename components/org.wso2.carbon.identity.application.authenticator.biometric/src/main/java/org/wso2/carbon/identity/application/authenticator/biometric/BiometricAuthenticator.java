@@ -258,7 +258,19 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
         try {
             if (validateSignature(jwt, serverChallenge)) {
-                authenticationContext.setSubject(user);
+                PushJWTValidator validator = new PushJWTValidator();
+                String authStatus = validator.getAuthStatus(jwt);
+                // TODO: Change Successful to Allowed
+                if(authStatus.equals("SUCCESSFUL")) {
+                    authenticationContext.setSubject(user);
+                } else if(authStatus.equals("DENIED")) {
+                    httpServletResponse.sendRedirect(
+                            "/authenticationendpoint/retry.do?status=Authentication Denied!"
+                                    + "&statusMsg=Authentication was denied from the mobile app"
+                    );
+                } else {
+                    // TODO: Handle getting an unidentified response
+                }
             } else {
                 authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
                 throw new AuthenticationFailedException("Authentication failed! Could not verify signature.", user);
