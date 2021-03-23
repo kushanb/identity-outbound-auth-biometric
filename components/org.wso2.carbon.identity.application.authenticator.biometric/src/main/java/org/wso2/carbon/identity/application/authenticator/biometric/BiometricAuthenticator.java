@@ -256,9 +256,9 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String jwt = authDataDTO.getAuthToken();
         String serverChallenge = authDataDTO.getChallenge();
 
+        PushJWTValidator validator = new PushJWTValidator();
         try {
             if (validateSignature(jwt, serverChallenge)) {
-                PushJWTValidator validator = new PushJWTValidator();
                 String authStatus = validator.getAuthStatus(jwt);
                 // TODO: Change Successful to Allowed
                 if(authStatus.equals("SUCCESSFUL")) {
@@ -281,6 +281,9 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         } catch (SQLException e) {
             log.error("SQL Exception while trying to get public key", e);
         }
+
+        AuthContextCache.getInstance().clearCacheEntryByRequestId(new AuthContextcacheKey(
+                validator.getSessionDataKey(jwt)));
     }
 
     @Override
