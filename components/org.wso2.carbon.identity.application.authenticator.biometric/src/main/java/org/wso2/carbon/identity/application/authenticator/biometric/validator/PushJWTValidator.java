@@ -9,8 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-//import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
-//import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
+import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
+import org.wso2.carbon.identity.oauth2.IdentityOAuth2Exception;
 
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -58,7 +58,6 @@ public class PushJWTValidator {
                     return false;
                 }
             }
-            // TODO: Do the validations below
             // Validation of expiry time
             if (!checkExpirationTime(claimsSet.getExpirationTime())) {
                 return false;
@@ -122,8 +121,7 @@ public class PushJWTValidator {
         }
     }
 
-    // TODO: Have a common method to get the jwt claims. Call that method with the claim name as an argument
-    public String getDeviceId(String jwt) {
+    public String getJWTClaim(String jwt, String claim) {
         try {
             if(!isJWT(jwt)){
                 return null;
@@ -131,7 +129,7 @@ public class PushJWTValidator {
                 SignedJWT signedJWT = SignedJWT.parse(jwt);
                 JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
                 if(claimSet != null) {
-                    return (String) claimSet.getClaim("did");
+                    return (String) claimSet.getClaim(claim);
                 } else {
                     return null;
                 }
@@ -140,71 +138,45 @@ public class PushJWTValidator {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public String getDeviceId(String jwt) {
+        return getJWTClaim(jwt,"did");
     }
 
     public String getSessionDataKey(String jwt) {
-        try {
-            if(!isJWT(jwt)) {
-                return null;
-            } else {
-                SignedJWT signedJWT = SignedJWT.parse(jwt);
-                JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-                if(claimSet != null) {
-                    return (String) claimSet.getClaim("sid");
-                } else {
-                    return null;
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getJWTClaim(jwt, "sid");
     }
 
     public String getAuthStatus(String jwt) {
-        try {
-            if(!isJWT(jwt)) {
-                return null;
-            } else {
-                SignedJWT signedJWT = SignedJWT.parse(jwt);
-                JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-                if(claimSet != null) {
-                    return (String) claimSet.getClaim("res");
-                } else {
-                    return null;
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return getJWTClaim(jwt, "res");
     }
 
     private boolean checkExpirationTime(Date expirationTime) {
 
-//        long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
-//        long expirationTimeInMillis = expirationTime.getTime();
-//        long currentTimeInMillis = System.currentTimeMillis();
-//        if ((currentTimeInMillis + timeStampSkewMillis) > expirationTimeInMillis) {
-//
-//            return false;
-//        }
+        long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
+        long expirationTimeInMillis = expirationTime.getTime();
+        long currentTimeInMillis = System.currentTimeMillis();
+        if ((currentTimeInMillis + timeStampSkewMillis) > expirationTimeInMillis) {
+
+            return false;
+        }
 
         return true;
     }
 
     private boolean checkNotBeforeTime(Date notBeforeTime) throws IdentityPushException {
 
-//        if (notBeforeTime != null) {
-//            long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
-//            long notBeforeTimeMillis = notBeforeTime.getTime();
-//            long currentTimeInMillis = System.currentTimeMillis();
-//            if (currentTimeInMillis + timeStampSkewMillis < notBeforeTimeMillis) {
-//
-//                throw new IdentityPushException("Token is used before Not_Before_Time.");
-//            }
-//
-//        }
+        if (notBeforeTime != null) {
+            long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
+            long notBeforeTimeMillis = notBeforeTime.getTime();
+            long currentTimeInMillis = System.currentTimeMillis();
+            if (currentTimeInMillis + timeStampSkewMillis < notBeforeTimeMillis) {
+
+                throw new IdentityPushException("Token is used before Not_Before_Time.");
+            }
+
+        }
         return true;
     }
 
