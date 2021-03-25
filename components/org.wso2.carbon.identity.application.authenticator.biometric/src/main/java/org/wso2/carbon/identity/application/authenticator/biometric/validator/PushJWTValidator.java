@@ -70,20 +70,6 @@ public class PushJWTValidator {
         return true;
     }
 
-    // TODO: Remove redundant method
-//    public String getusername(String code) {
-//
-//        try {
-//            SignedJWT signedJWT = SignedJWT.parse(code);
-//            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-//            return claimsSet.getSubject();
-//
-//        } catch (ParseException e) {
-//            return null;
-//        }
-//
-//    }
-
     /**
      * Validate the signature of the JWT
      *
@@ -92,26 +78,11 @@ public class PushJWTValidator {
      * @return
      */
     public static boolean validateSignature(String publicKeyStr, SignedJWT signedJWT) {
-
         try {
-//            String deviceId = signedJWT.getPayload();
-//            DeviceHandler handler = new DeviceHandlerImpl();
-//            String publicKeyStr = handler.getPublicKey(deviceId);
-//            int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
-//            KeyStoreManager keyStoreManager = KeyStoreManager.getInstance(tenantId);
-//            RSAPublicKey publicKey = (RSAPublicKey) publicKeyString;
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(spec);
-//            if (!tenantDomain.equals("carbon.super")) {
-//                String ksName = tenantDomain.trim().replace(".", "-");
-//                String jksName = ksName + ".jks";
-//                publicKey = (RSAPublicKey) keyStoreManager.getKeyStore(jksName).getCertificate(tenantDomain)
-//                        .getPublicKey();
-//            } else {
-//                publicKey = (RSAPublicKey) keyStoreManager.getDefaultPublicKey();
-//            }
 
             JWSVerifier verifier = new RSASSAVerifier(publicKey);
             return signedJWT.verify(verifier);

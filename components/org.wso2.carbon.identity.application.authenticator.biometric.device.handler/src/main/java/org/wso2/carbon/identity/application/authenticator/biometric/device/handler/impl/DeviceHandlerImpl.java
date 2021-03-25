@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.BiometricDeviceHandlerCacheKey;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.DeviceCache;
@@ -37,8 +38,11 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
@@ -55,6 +59,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -134,26 +139,34 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
     }
 
-    @Override
-    public DiscoveryData getDiscoveryData() {
-
-        return null;
-    }
+//    @Override
+//    public DiscoveryData getDiscoveryData() {
+//
+//        return null;
+//    }
 
     /*
     *  This is the original method
     */
 
     @Override
-    public DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain) {
+    public DiscoveryData getDiscoveryData() {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving data to generate QR code");
         }
-        String deviceId = UUID.randomUUID().toString();
         User user = getAuthenticatedUser();
-        String firstName = "John";
-        String lastName = "Doe";
-        tenantDomain = user.getTenantDomain(); // TODO: remove params above as required
+
+        Map<String, String> userClaims = null;
+        try {
+            userClaims = getUserClaimValues(user);
+        } catch (AuthenticationFailedException e) {
+            e.printStackTrace();
+        }
+
+        String deviceId = UUID.randomUUID().toString();
+        String firstName = userClaims.get("http://wso2.org/claims/givenname");
+        String lastName = userClaims.get("http://wso2.org/claims/lastname");
+        String tenantDomain = user.getTenantDomain(); // TODO: remove params above as required
         String host = "https://192.168.1.112:9443";
         String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
         String registrationEndpoint = "/biometricdevice";
@@ -162,8 +175,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         UUID challenge = UUID.randomUUID();
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-                        user.getUserName(), user.getUserStoreDomain(),
-                        user.getTenantDomain(), false));
+                        user.getUserName(), user.getTenantDomain(), false));
         return new DiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host, basePath,
                 registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
     }
@@ -220,6 +232,26 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
+    }
+
+    private Map<String, String> getUserClaimValues(User authenticatedUser)
+            throws AuthenticationFailedException {
+
+        Map<String, String> claimValues;
+        try {
+            UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
+            UserStoreManager userStoreManager = userRealm.getUserStoreManager();
+            claimValues = userStoreManager.getUserClaimValues(IdentityUtil.addDomainToName(
+                    authenticatedUser.getUserName(), authenticatedUser.getUserStoreDomain()), new String[]{
+                            "http://wso2.org/claims/givenname",
+                            "http://wso2.org/claims/lastname"},
+                    UserCoreConstants.DEFAULT_PROFILE);
+        } catch (UserStoreException e) {
+            log.error("Error while reading user claims", e);
+            String errorMessage = String.format("Failed to read user claims for user : %s.", authenticatedUser);
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
+        return claimValues;
     }
 
 }

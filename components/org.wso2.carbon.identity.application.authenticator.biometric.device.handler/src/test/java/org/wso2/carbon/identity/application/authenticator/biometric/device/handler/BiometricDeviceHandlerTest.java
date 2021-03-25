@@ -132,7 +132,7 @@ public class BiometricDeviceHandlerTest {
     public void mockRegistrationCacheEntry() throws Exception {
         cache = spy(RegistrationRequestChallengeCache.getInstance());
         RegistrationRequestChallengeCacheEntry entry = new RegistrationRequestChallengeCacheEntry(UUID.randomUUID(),
-                "avishka", "PRIMARY", "carbon.super", false);
+                "avishka", "carbon.super", false);
         when(cache, "getValueFromCacheByRequestId").thenReturn(entry);
     }
 

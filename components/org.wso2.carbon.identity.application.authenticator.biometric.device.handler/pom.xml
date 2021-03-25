@@ -253,6 +253,7 @@
                            org.osgi.framework;version="[1.8,2)",
                            org.wso2.carbon.context;version="[4.6,5)",
                            org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
+                           org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
                            org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
                            org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
                            org.wso2.carbon.identity.base;version="[5.12,6)",
