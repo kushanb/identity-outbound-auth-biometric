@@ -37,8 +37,12 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.RegistrationRequest;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.base.IdentityException;
+//import org.wso2.carbon.identity.core.ServiceURL;
+//import org.wso2.carbon.identity.core.ServiceURLBuilderFactory;
+//import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
+//import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
@@ -166,8 +170,23 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         String deviceId = UUID.randomUUID().toString();
         String firstName = userClaims.get("http://wso2.org/claims/givenname");
         String lastName = userClaims.get("http://wso2.org/claims/lastname");
-        String tenantDomain = user.getTenantDomain(); // TODO: remove params above as required
+        String tenantDomain = user.getTenantDomain();
         String host = "https://192.168.1.112:9443";
+//        String host = IdentityUtil.getHostName() + ":9443";
+        // TODO: get port number dynamically
+//        String host = null;
+//        try {
+//            ServiceURL urlBuilder = new ServiceURLBuilderFactory().
+//                    createServiceURLBuilder().build();
+//            host = urlBuilder.getAbsolutePublicURL();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+        /*
+         * TODO: Get the host using a method that supports IS 5.10.0
+         *  clone and search in identity framework and OAuth component using IDE
+         */
+        //
         String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
         String registrationEndpoint = "/biometricdevice";
         String removeDeviceEndpoint = "/push-auth/devices/remove";
