@@ -19,28 +19,28 @@
 <component xmlns="http://products.wso2.org/carbon">
     <ManagementPermissions>
         <ManagementPermission>
-            <DisplayName>Biometric Device Management</DisplayName>
+            <DisplayName>Push Device Management</DisplayName>
             <ResourceId>/permission/admin/manage/identity</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>Biometric Device Management</DisplayName>
+            <DisplayName>Push Device Management</DisplayName>
             <ResourceId>/permission/admin/manage/identity/user</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>Biometric Device Management</DisplayName>
-            <ResourceId>/permission/admin/manage/identity/user/biometric_divice_mgt</ResourceId>
+            <DisplayName>Push Device Management</DisplayName>
+            <ResourceId>/permission/admin/manage/identity/user/push_device_mgt</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
             <DisplayName>Delete</DisplayName>
-            <ResourceId>/permission/admin/manage/identity/user/biometric_divice_mgt/delete</ResourceId>
+            <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/delete</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
             <DisplayName>View</DisplayName>
-            <ResourceId>/permission/admin/manage/identity/user/biometric_divice_mgt/list</ResourceId>
+            <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/list</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
             <DisplayName>List</DisplayName>
-            <ResourceId>/permission/admin/manage/identity/user/biometric_divice_mgt/view</ResourceId>
+            <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/view</ResourceId>
         </ManagementPermission>
     </ManagementPermissions>
 </component>
