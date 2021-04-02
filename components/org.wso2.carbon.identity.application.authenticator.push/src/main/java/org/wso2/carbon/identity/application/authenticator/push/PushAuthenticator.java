@@ -162,6 +162,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private String getDevicesPage(AuthenticationContext context) throws AuthenticationFailedException {
 
         String devicesPage = getDevicesPageFromXMLFile(context);
+        // TODO: Why is that method called in the first place?
         if (StringUtils.isEmpty(devicesPage)) {
             devicesPage = PushAuthenticatorConstants.DEVICES_PAGE;
             if (log.isDebugEnabled()) {

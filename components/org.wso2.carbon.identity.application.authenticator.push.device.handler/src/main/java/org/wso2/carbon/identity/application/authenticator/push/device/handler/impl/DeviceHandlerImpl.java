@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.PushDeviceHandlerCacheKey;
@@ -172,21 +173,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         String lastName = userClaims.get("http://wso2.org/claims/lastname");
         String tenantDomain = user.getTenantDomain();
         String host = "https://192.168.1.112:9443";
-//        String host = IdentityUtil.getHostName() + ":9443";
-        // TODO: get port number dynamically
-//        String host = null;
-//        try {
-//            ServiceURL urlBuilder = new ServiceURLBuilderFactory().
-//                    createServiceURLBuilder().build();
-//            host = urlBuilder.getAbsolutePublicURL();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-        /*
-         * TODO: Get the host using a method that supports IS 5.10.0
-         *  clone and search in identity framework and OAuth component using IDE
-         */
-        //
+//        String host = IdentityUtil.getServerURL(null, false, false);
         String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
         String registrationEndpoint = "/biometricdevice";
         String removeDeviceEndpoint = "/push-auth/devices/remove";
@@ -228,8 +215,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
 
     private User getAuthenticatedUser() {
-        User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
-        user.setTenantDomain(CarbonContext.getThreadLocalCarbonContext().getTenantDomain());
+        User user = User.getUserFromUserName(PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername());
+        user.setTenantDomain(PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain());
         return user;
     }
 
