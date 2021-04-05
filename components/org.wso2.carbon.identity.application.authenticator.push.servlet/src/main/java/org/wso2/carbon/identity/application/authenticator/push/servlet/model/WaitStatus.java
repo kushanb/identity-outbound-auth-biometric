@@ -20,74 +20,19 @@
 package org.wso2.carbon.identity.application.authenticator.push.servlet.model;
 
 /**
- * This class represents the status response for status and challenge returned from the mobile device.
+ * This class represents the status of the response sent from the mobile app
  */
 public class WaitStatus {
-
     private String status;
-    private String signedChallenge;
-    private String authStatus;
-//    private String signature;
-//    private String deviceId;
-    private String token;
 
-//    public String getDeviceId() {
-//        return deviceId;
-//    }
-
-//    public void setDeviceId(String deviceId) {
-//        this.deviceId = deviceId;
-//    }
-
-//    public String getSignedChallenge() {
-//        return signedChallenge;
-//    }
-
-//    public void setSignedChallenge(String signedChallenge) {
-//        this.signedChallenge = signedChallenge;
-//    }
-
-//    public String getSignature() {
-//        return signature;
-//    }
-
-//    public void setSignature(String signature) {
-//        this.signature = signature;
-//    }
 
     public String getStatus() {
-
         return status;
     }
 
     public void setStatus(String status) {
-
         this.status = status;
     }
 
-    public String getChallenge() {
 
-        return signedChallenge;
-    }
-
-    public void setChallenge(String challenge) {
-
-        this.signedChallenge = challenge;
-    }
-
-    public String getAuthStatus() {
-        return authStatus;
-    }
-
-    public void setAuthStatus(String authStatus) {
-        this.authStatus = authStatus;
-    }
-
-    public String getToken() { return token; }
-
-    public void setToken(String token) {
-
-        this.token = token;
-
-    }
 }

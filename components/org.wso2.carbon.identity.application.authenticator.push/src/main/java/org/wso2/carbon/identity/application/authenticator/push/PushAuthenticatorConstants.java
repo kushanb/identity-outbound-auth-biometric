@@ -55,8 +55,8 @@ public class PushAuthenticatorConstants {
     public static final String DATA = "data";
     public static final String WAIT_PAGE = "authenticationendpoint/wait.jsp";
     public static final String DEVICES_PAGE = "authenticationendpoint/push-devices.jsp";
-    public static final String PUSH_ENDPOINT = "/push-auth";
-    public static final String POLLING_QUERY_PARAMS = "?initiator=web&sessionDataKey=";
+    public static final String PUSH_ENDPOINT = "/push-auth/check-status";
+    public static final String POLLING_QUERY_PARAMS = "?sessionDataKey=";
     public static final String COMPLETED = "COMPLETED";
     public static final String PUSH_AUTH_WAIT = "wait";
     public static final String PUSH_AUTH_ACCESS_DENIED = "access-denied";

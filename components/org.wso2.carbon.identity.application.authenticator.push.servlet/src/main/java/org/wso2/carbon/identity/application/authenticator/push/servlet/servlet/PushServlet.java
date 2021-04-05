@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
@@ -149,38 +150,6 @@ public class PushServlet extends HttpServlet {
 
     }
 
-    private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        WaitStatus waitResponse = new WaitStatus();
-        String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-        String signedChallengeExtracted = pushDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
-        String authStatus = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
-        String token = pushDataStoreInstance.getToken(sessionDataKeyWeb);
-        if (StringUtils.isEmpty(token)) {
-            if (log.isDebugEnabled()) {
-                log.debug("Signed challenge sent from the mobile application is null.");
-            }
-
-        } else {
-            // If the signed challenge sent from the mobile application is not null,else block is executed..
-            response.setStatus(HttpServletResponse.SC_OK);
-            waitResponse.setStatus(PushServletConstants.Status.COMPLETED.name());
-            waitResponse.setChallenge(signedChallengeExtracted);
-            waitResponse.setAuthStatus(authStatus);
-            waitResponse.setToken(token);
-            pushDataStoreInstance.removePushData(sessionDataKeyWeb);
-            response.setContentType(MediaType.APPLICATION_JSON);
-            String json = new Gson().toJson(waitResponse);
-            if (log.isDebugEnabled()) {
-                log.debug("Json Response to the wait page: " + json);
-            }
-            try (PrintWriter out = response.getWriter()) {
-                out.print(json);
-                out.flush();
-            }
-        }
-    }
-
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!(request.getParameterMap().containsKey("jwt"))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received authentication response token is null");
@@ -189,7 +158,7 @@ public class PushServlet extends HttpServlet {
             PushJWTValidator validator = new PushJWTValidator();
             String token = request.getParameter("jwt");
             String sessionDataKey = validator.getSessionDataKey(token);
-
+            // TODO: Handle session data key null instance
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
                     (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
 
@@ -200,8 +169,8 @@ public class PushServlet extends HttpServlet {
                     new AuthContextCacheEntry(context));
 
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
-            String status = validator.getAuthStatus(token);
-            pushDataStoreInstance.addPushData(sessionDataKeyMobile, status, token);
+            String status = PushAuthenticatorConstants.COMPLETED; // validator.getAuthStatus(token);
+            pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);

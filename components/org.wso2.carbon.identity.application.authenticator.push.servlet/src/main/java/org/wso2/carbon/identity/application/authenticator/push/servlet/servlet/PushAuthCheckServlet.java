@@ -17,6 +17,9 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet for handling the status checks for authentication requests from the push authenticator wait page
+ */
 public class PushAuthCheckServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(PushAuthCheckServlet.class);
@@ -27,7 +30,7 @@ public class PushAuthCheckServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
-            // TODO: Throw a proper exception or BAD_REQUEST here
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             if (log.isDebugEnabled()) {
                 log.debug("Unsupported HTTP GET request or session data key is null.");
             }
@@ -41,22 +44,19 @@ public class PushAuthCheckServlet extends HttpServlet {
 
         WaitStatus waitResponse = new WaitStatus();
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-        String signedChallengeExtracted = pushDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
-        String authStatus = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
-        String token = pushDataStoreInstance.getToken(sessionDataKeyWeb);
+        String status = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
 
-        if (StringUtils.isEmpty(token)) {
+        if (status == null) {
+            response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
-                log.debug("Signed challenge sent from the mobile application is null.");
+                log.debug("Mobile authentication response has not been received yet!");
             }
 
-        } else {
+        } else if (status.equals(PushServletConstants.Status.COMPLETED.name())){
+            // TODO: Change to validate through a constant instead of enum
             // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
             waitResponse.setStatus(PushServletConstants.Status.COMPLETED.name());
-            waitResponse.setChallenge(signedChallengeExtracted);
-            waitResponse.setAuthStatus(authStatus);
-            waitResponse.setToken(token);
             pushDataStoreInstance.removePushData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
@@ -67,6 +67,11 @@ public class PushAuthCheckServlet extends HttpServlet {
                 out.print(json);
                 out.flush();
             }
+        } else {
+            if (log.isDebugEnabled()) {
+                log.debug("Unknown value given for status!");
+            }
+            // TODO: Return appropriate response
         }
     }
 }

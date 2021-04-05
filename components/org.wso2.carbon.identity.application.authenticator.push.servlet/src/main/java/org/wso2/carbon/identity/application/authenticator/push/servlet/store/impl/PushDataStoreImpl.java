@@ -51,16 +51,13 @@ public class PushDataStoreImpl implements PushDataStore, Serializable {
     }
 
     @Override
-    public void addPushData(String sessionDataKey, String authStatus, String token) {
+    public void addPushData(String sessionDataKey, String authStatus) {
         pushDataStore.put(sessionDataKey + "status", authStatus);
-        pushDataStore.put(sessionDataKey + "token", token);
     }
 
     @Override
     public void removePushData(String sessionDataKey) {
-
         pushDataStore.remove(sessionDataKey);
-        // TODO: Remove cache once the auth flow gets completed
     }
 
     @Override

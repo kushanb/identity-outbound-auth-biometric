@@ -37,7 +37,7 @@ public interface PushDataStore {
     /**
      * Adds a new record of session data key against signed challenge to the push data store.
      */
-    void addPushData(String sessionDataKey, String authStatus, String token);
+    void addPushData(String sessionDataKey, String authStatus);
 
     /**
      * Removes the record with the given session data key in push data store.
