@@ -59,49 +59,66 @@ public class PushServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(PushServlet.class);
     private PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
+//    @Override
+//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//            throws IOException {
+//        String action = null;
+//        action = request.getParameter("ACTION");
+//        String key = request.getParameter("sessionDataKey");
+//        if (action == null) {
+//            action = "WaitResponse";
+//        }
+//        switch (action) {
+//            case "Authenticate": {
+//                String deviceId = request.getParameter("deviceId");
+//                PushAuthenticator authenticator = new PushAuthenticator();
+//                authenticator.sendRequest(request, response, deviceId, key);
+//                break;
+//            }
+//            case "WaitResponse": {
+//                if (!(request.getParameterMap().containsKey(PushServletConstants.INITIATOR))) {
+//                    if (log.isDebugEnabled()) {
+//                        log.debug("Invalid request as the query parameter for initiator is missing.");
+//                    }
+//                } else {
+//                    // If the initiator is not null, else block is executed.
+//                    String initiator = request.getParameter(PushServletConstants.INITIATOR);
+//                    if (!(PushServletConstants.WEB.equals(initiator) && request.getParameterMap()
+//                            .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
+//                        if (log.isDebugEnabled()) {
+//                            log.debug("Unsupported HTTP GET request or session data key is null.");
+//                        }
+//                    } else {
+//                        // If the initiator is equal to WEB and if the query parameter session data
+//                        // key is not null, else block is executed.
+//                        handleWebResponse(request, response);
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//
+//    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        String action = null;
-        action = request.getParameter("ACTION");
-        String key = request.getParameter("sessionDataKey");
-        if (action == null) {
-            action = "WaitResponse";
-        }
-        switch (action) {
-            case "Authenticate": {
-                String deviceId = request.getParameter("deviceId");
-                PushAuthenticator authenticator = new PushAuthenticator();
-                authenticator.sendRequest(request, response, deviceId, key);
-                break;
-            }
-            case "WaitResponse": {
-                if (!(request.getParameterMap().containsKey(PushServletConstants.INITIATOR))) {
-                    if (log.isDebugEnabled()) {
-                        log.debug("Invalid request as the query parameter for initiator is missing.");
-                    }
-                } else {
-                    // If the initiator is not null, else block is executed.
-                    String initiator = request.getParameter(PushServletConstants.INITIATOR);
-                    if (!(PushServletConstants.WEB.equals(initiator) && request.getParameterMap()
-                            .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
-                        if (log.isDebugEnabled()) {
-                            log.debug("Unsupported HTTP GET request or session data key is null.");
-                        }
-                    } else {
-                        // If the initiator is equal to WEB and if the query parameter session data
-                        // key is not null, else block is executed.
-                        handleWebResponse(request, response);
-                    }
-                }
-                break;
-            }
-        }
 
+        // Handles request from devices page for sending the request from the selected device
+
+        String key = request.getParameter("sessionDataKey");
+
+        String deviceId = request.getParameter("deviceId");
+        PushAuthenticator authenticator = new PushAuthenticator();
+        authenticator.sendRequest(request, response, deviceId, key);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // Handles request from the mobile app for authentication
+        // TODO: Remove the delete device endpoint from here
+
         String action = request.getParameter("ACTION");
         if (action == null) {
             action = "AUTH_REQUEST";

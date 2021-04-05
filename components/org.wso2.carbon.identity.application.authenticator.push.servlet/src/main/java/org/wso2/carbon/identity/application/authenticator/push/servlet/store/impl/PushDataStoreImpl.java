@@ -60,6 +60,7 @@ public class PushDataStoreImpl implements PushDataStore, Serializable {
     public void removePushData(String sessionDataKey) {
 
         pushDataStore.remove(sessionDataKey);
+        // TODO: Remove cache once the auth flow gets completed
     }
 
     @Override

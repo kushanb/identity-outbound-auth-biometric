@@ -30,6 +30,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.servlet.PushAuthCheckServlet;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.servlet.PushServlet;
 import javax.servlet.Servlet;
 
@@ -49,8 +50,12 @@ public class PushEndpointServiceComponent {
 
         Servlet pushServlet = new ContextPathServletAdaptor(new PushServlet(),
                 PushServletConstants.PUSH_ENDPOINT);
+        Servlet statusServlet = new ContextPathServletAdaptor(new PushAuthCheckServlet(),
+                "/push-auth/check-status");
         try {
             httpService.registerServlet(PushServletConstants.PUSH_ENDPOINT, pushServlet,
+                    null, null);
+            httpService.registerServlet("/push-auth/check-status", statusServlet,
                     null, null);
             if (log.isDebugEnabled()) {
                 log.debug("Push endpoint service component activated. The endpoint: " +
