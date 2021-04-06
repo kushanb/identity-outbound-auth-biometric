@@ -40,7 +40,6 @@ import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServl
 import org.wso2.carbon.identity.application.authenticator.push.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -151,6 +150,7 @@ public class PushServlet extends HttpServlet {
     }
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         if (!(request.getParameterMap().containsKey("jwt"))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received authentication response token is null");
         } else {
@@ -159,6 +159,10 @@ public class PushServlet extends HttpServlet {
             String token = request.getParameter("jwt");
             String sessionDataKey = validator.getSessionDataKey(token);
             // TODO: Handle session data key null instance
+            if (StringUtils.isEmpty(sessionDataKey)) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                        "Received authentication response doesn't contain required session data key");
+            }
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
                     (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
 
@@ -180,6 +184,7 @@ public class PushServlet extends HttpServlet {
 
     private void deleteDevice(HttpServletRequest request, HttpServletResponse response)
             throws PushDeviceHandlerClientException, PushDeviceHandlerServerException, SQLException {
+
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         deviceHandler.unregisterDevice(request.getParameter("deviceId"));
         response.setStatus(HttpServletResponse.SC_OK);
