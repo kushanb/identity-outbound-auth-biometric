@@ -25,6 +25,7 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandlerConstants;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.PushDeviceHandlerCacheKey;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.DeviceCache;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.DeviceCacheEntry;
@@ -169,15 +170,15 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         }
 
         String deviceId = UUID.randomUUID().toString();
-        String firstName = userClaims.get("http://wso2.org/claims/givenname");
-        String lastName = userClaims.get("http://wso2.org/claims/lastname");
+        String firstName = userClaims.get(DeviceHandlerConstants.GIVEN_NAME_USER_CLAIM);
+        String lastName = userClaims.get(DeviceHandlerConstants.LAST_NAME_USER_CLAIM);
         String tenantDomain = user.getTenantDomain();
-        String host = "https://192.168.1.112:9443";
+        String host = "https://192.168.1.112:9443"; // Remove once host name prob is figured
 //        String host = IdentityUtil.getServerURL(null, false, false);
         String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
-        String registrationEndpoint = "/biometricdevice";
-        String removeDeviceEndpoint = "/push-auth/devices/remove";
-        String authenticationEndpoint = "/push-auth";
+        String registrationEndpoint = DeviceHandlerConstants.REGISTRATION_ENDPOINT;
+        String removeDeviceEndpoint = DeviceHandlerConstants.REMOVE_DEVICE_ENDPOINT;
+        String authenticationEndpoint = DeviceHandlerConstants.AUTHENTICATION_ENDPOINT;
         UUID challenge = UUID.randomUUID();
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new PushDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
@@ -249,8 +250,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             UserStoreManager userStoreManager = userRealm.getUserStoreManager();
             claimValues = userStoreManager.getUserClaimValues(IdentityUtil.addDomainToName(
                     authenticatedUser.getUserName(), authenticatedUser.getUserStoreDomain()), new String[]{
-                            "http://wso2.org/claims/givenname",
-                            "http://wso2.org/claims/lastname"},
+                            DeviceHandlerConstants.GIVEN_NAME_USER_CLAIM,
+                            DeviceHandlerConstants.LAST_NAME_USER_CLAIM},
                     UserCoreConstants.DEFAULT_PROFILE);
         } catch (UserStoreException e) {
             log.error("Error while reading user claims", e);

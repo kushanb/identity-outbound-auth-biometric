@@ -29,7 +29,8 @@ public class PushServletConstants {
     public static final String WEB = "web";
     public static final String CHALLENGE = "challenge";
     public static final String SIGNED_CHALLENGE = "signedChallenge";
-    public static final String PUSH_ENDPOINT = "/push-auth";
+    public static final String PUSH_AUTH_ENDPOINT = "/push-auth/authenticate";
+    public static final String PUSH_AUTH_STATUS_ENDPOINT = "/push-auth/check-status";
 
     /**
      * Object holding wait status. The status of the response from mobile is either COMPLETED or REJECTED.

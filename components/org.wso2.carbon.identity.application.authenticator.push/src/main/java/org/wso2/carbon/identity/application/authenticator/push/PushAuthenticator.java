@@ -309,11 +309,11 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     public void sendRequest(HttpServletRequest request, HttpServletResponse response,
-                            String deviceid, String key) throws IOException {
+                            String deviceId, String key) throws IOException {
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         Device device = null;
         try {
-            device = deviceHandler.getDevice(deviceid);
+            device = deviceHandler.getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             log.error("Error when trying to get device information", e);
         } catch (SQLException e) {
@@ -371,7 +371,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
-            pushNotificationSender.sendPushNotification(deviceid, pushId, message, randomChallenge, sessionDataKey,
+            pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
                     username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
         } catch (AuthenticationFailedException e) {
             log.error("Authentication Error", e);
