@@ -122,6 +122,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
             } else {
                 log.error("The requested device is not registered in the system");
+                IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
                 throw new PushDeviceHandlerServerException("Device Not found.");
             }
         }
