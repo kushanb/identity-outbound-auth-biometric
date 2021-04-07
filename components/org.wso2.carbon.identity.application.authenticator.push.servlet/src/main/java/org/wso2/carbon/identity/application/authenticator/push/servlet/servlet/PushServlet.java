@@ -134,16 +134,6 @@ public class PushServlet extends HttpServlet {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "SQL Exception");
             }
         } else {
-            if (!request.getParameterMap().containsKey(PushServletConstants.INITIATOR)) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query parameter for initiator is missing.");
-            }
-            String initiator = request.getParameter(PushServletConstants.INITIATOR);
-
-            if (!PushServletConstants.MOBILE.equals(initiator)) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported HTTP request from a mobile device.");
-                return;
-            }
             handleMobileResponse(request, response);
         }
 
