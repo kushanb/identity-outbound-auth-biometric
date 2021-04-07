@@ -100,7 +100,7 @@ export class Accounts {
     let request: RegistrationRequestInterface;
     // TODO: Check why this is done and correct it.
     request = {
-      id: discoveryData.id,
+      deviceId: discoveryData.id,
       pushID: fcmToken,
       publicKey: modPubKey,
       signature: signedChallenege,
@@ -111,7 +111,7 @@ export class Accounts {
 
     // TODO: Has code duplication from above scenario
     let regRequestBody: any = {
-      id: request.id,
+      deviceId: request.deviceId,
       model: request.model,
       name: request.deviceName,
       publickey: request.publicKey,
@@ -204,7 +204,7 @@ export class Accounts {
       .join("&");
 
     // TODO: Add the correct implementation to take the url from the saved data
-    let url = "https://192.168.1.112:9443/biometric-auth";
+    let url = "https://192.168.1.112:9443/push-auth";
     let headers = {
       "Content-Type": "application/x-www-form-urlencoded",
     };

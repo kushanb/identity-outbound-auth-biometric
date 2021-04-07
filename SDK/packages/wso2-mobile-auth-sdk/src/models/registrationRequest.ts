@@ -4,7 +4,7 @@ import { DiscoveryDataInterface } from "../models/discoveryData";
  * Interface for Registration request model
  */
 export interface RegistrationRequestInterface {
-  id: string;
+  deviceId: string;
   deviceName?: string;
   model?: string;
   pushID: string;

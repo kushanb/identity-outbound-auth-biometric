@@ -58,13 +58,13 @@ export class Authorization {
       authRequest = {
         deviceId: request.data.deviceId,
         challenge: request.data.challenge,
-        sessionDataKey: request.sessionDataKey,
+        sessionDataKey: request.data.sessionDataKey,
         authUrl:
-          "https://192.168.1.112:9443/biometric-auth?initiator=mobile" +
+          "https://192.168.1.112:9443/push-auth/authenticate" /* + "?initiator=mobile" +
           "&sessionDataKey=" +
           request.data.sessionDataKey +
           "&challenge=" +
-          request.data.challenge,
+          request.data.challenge */,
         privateKey: privateKey,
         connectionCode: (
           request.data.sessionDataKey.substring(0, 4) +
@@ -172,9 +172,9 @@ export class Authorization {
     };
 
     let authRequestBody: any = {
-      auth_status: response,
-      signature: signature,
-      deviceId: authRequest.deviceId,
+      // auth_status: response,
+      // signature: signature,
+      // deviceId: authRequest.deviceId,
       jwt: jwt,
     };
 
