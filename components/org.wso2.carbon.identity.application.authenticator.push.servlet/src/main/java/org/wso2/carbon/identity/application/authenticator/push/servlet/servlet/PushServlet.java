@@ -20,6 +20,8 @@
 package org.wso2.carbon.identity.application.authenticator.push.servlet.servlet;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,18 +143,20 @@ public class PushServlet extends HttpServlet {
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        if (!(request.getParameterMap().containsKey("jwt"))) {
+        JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
+        String token = json.get("authResponse").getAsString();
+        if (StringUtils.isEmpty(token)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received authentication response token is null");
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
             PushJWTValidator validator = new PushJWTValidator();
-            String token = request.getParameter("jwt");
             String sessionDataKey = validator.getSessionDataKey(token);
-            // TODO: Handle session data key null instance
+
             if (StringUtils.isEmpty(sessionDataKey)) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Received authentication response doesn't contain required session data key");
             }
+
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
                     (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
 
@@ -163,8 +167,9 @@ public class PushServlet extends HttpServlet {
                     new AuthContextCacheEntry(context));
 
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
-            String status = PushAuthenticatorConstants.COMPLETED; // validator.getAuthStatus(token);
+            String status = PushAuthenticatorConstants.COMPLETED;
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
+            // TODO: change response to 202 Accepted
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
