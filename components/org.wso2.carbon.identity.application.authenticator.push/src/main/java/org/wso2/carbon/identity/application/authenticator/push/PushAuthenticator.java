@@ -264,7 +264,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                                     + "&statusMsg=Authentication was denied from the mobile app"
                     );
                 } else {
-                    // TODO: Handle getting an unidentified response
+                    throw new AuthenticationFailedException("Authentication failed! Auth status unavailable", user);
                 }
             } else {
                 authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_STATUS, true);
