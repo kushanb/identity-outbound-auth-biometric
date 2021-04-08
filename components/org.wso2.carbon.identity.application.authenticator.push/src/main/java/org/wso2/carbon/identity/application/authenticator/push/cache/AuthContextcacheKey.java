@@ -21,19 +21,23 @@ package org.wso2.carbon.identity.application.authenticator.push.cache;
 import org.wso2.carbon.identity.application.common.cache.CacheKey;
 
 public class AuthContextcacheKey extends CacheKey {
+
     private static final long serialVersionUID = -2846349295093760499L;
     private String requestId;
 
     public AuthContextcacheKey(String requestId) {
+
         this.requestId = requestId;
     }
 
     public String getRequestId() {
+
         return requestId;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (!(o instanceof AuthContextcacheKey)) {
             return false;
         }
@@ -42,6 +46,7 @@ public class AuthContextcacheKey extends CacheKey {
 
     @Override
     public int hashCode() {
+
         return requestId.hashCode();
     }
 }

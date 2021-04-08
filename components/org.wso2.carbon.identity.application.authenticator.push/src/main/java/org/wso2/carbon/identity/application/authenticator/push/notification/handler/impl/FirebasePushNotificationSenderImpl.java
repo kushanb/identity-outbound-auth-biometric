@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.A
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.PushNotificationSender;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -42,7 +43,7 @@ import javax.ws.rs.core.MediaType;
 public class FirebasePushNotificationSenderImpl implements PushNotificationSender {
 
     private static final Log log = LogFactory.getLog(FirebasePushNotificationSenderImpl.class);
-    private static FirebasePushNotificationSenderImpl pushNotificationinstance;
+    private static FirebasePushNotificationSenderImpl pushNotificationInstance;
     private String serverKey;
     private String fcmUrl;
 
@@ -54,17 +55,17 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
 
     public static synchronized FirebasePushNotificationSenderImpl getInstance() {
 
-        if (pushNotificationinstance == null) {
-            pushNotificationinstance = new FirebasePushNotificationSenderImpl();
+        if (pushNotificationInstance == null) {
+            pushNotificationInstance = new FirebasePushNotificationSenderImpl();
         }
-        return pushNotificationinstance;
+        return pushNotificationInstance;
     }
 
     /**
      * Method to send push notification to Android FireBase Cloud messaging
      * Server.
      *
-     * @param pushId        Generated and provided from Android Client Developer
+     * @param pushId          Generated and provided from Android Client Developer
      * @param message         which contains actual information
      * @param randomChallenge which contains a random challenge for each push notification
      * @param sessionDataKey  which contains the session data key for each push notification.
@@ -94,9 +95,6 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
 
             JSONObject pushNotificationInfo = new JSONObject();
             pushNotificationInfo.put(PushAuthenticatorConstants.BODY, message);
-//            pushNotificationInfo.put(PushAuthenticatorConstants.CONTENT_AVAILABLE, true);
-//            pushNotificationInfo.put(PushAuthenticatorConstants.PRIORITY,
-//                    PushAuthenticatorConstants.HIGH);
 
             JSONObject pushNotificationData = new JSONObject();
             pushNotificationData.put(PushAuthenticatorConstants.DEVICE_ID, deviceId);
@@ -110,14 +108,8 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             pushNotificationData.put(PushAuthenticatorConstants.IP_ADDRESS, hostname);
             pushNotificationData.put(PushAuthenticatorConstants.REQUEST_DEVICE_BROWSER, userBrowser);
             pushNotificationData.put(PushAuthenticatorConstants.REQUEST_DEVICE_OS, userOS);
-//            pushNotificationData.put(PushAuthenticatorConstants.APPLICATION_URL, hostname);
-            //Reason for sending the click_action in the data payload is to
-            // specifically open a different activity in android app except the default main activity.
             pushNotificationData.put(PushAuthenticatorConstants.CLICK_ACTION,
                     PushAuthenticatorConstants.DISPLAY_ANDROID_ACTIVITY);
-//            pushNotificationData.put(PushAuthenticatorConstants.CONTENT_AVAILABLE, true);
-//            pushNotificationData.put(PushAuthenticatorConstants.PRIORITY,
-//                    PushAuthenticatorConstants.HIGH);
 
             JSONObject json = new JSONObject();
             json.put(PushAuthenticatorConstants.TO, pushId.trim());

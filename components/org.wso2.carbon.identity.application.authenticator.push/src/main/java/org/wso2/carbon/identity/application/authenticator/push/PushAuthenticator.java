@@ -80,6 +80,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
     @Override
     public boolean canHandle(HttpServletRequest request) {
+
         return request.getParameter(PushAuthenticatorConstants.SIGNED_CHALLENGE) != null;
     }
 
@@ -98,6 +99,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     @Override
     protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) throws AuthenticationFailedException {
+
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
@@ -136,7 +138,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 response.sendRedirect(devicesPage);
             }
 
-
         } catch (IOException e) {
             log.error("Error when trying to redirect to push-devices.jsp page", e);
         } catch (PushDeviceHandlerServerException e) {
@@ -151,7 +152,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
     }
 
-
     /**
      * Get the push-devices.jsp page from authentication.xml file or use the wait page from constant file.
      *
@@ -162,7 +162,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private String getDevicesPage(AuthenticationContext context) throws AuthenticationFailedException {
 
         String devicesPage = getDevicesPageFromXMLFile(context);
-        // TODO: Why is that method called in the first place?
         if (StringUtils.isEmpty(devicesPage)) {
             devicesPage = PushAuthenticatorConstants.DEVICES_PAGE;
             if (log.isDebugEnabled()) {
@@ -257,9 +256,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (validateSignature(jwt, serverChallenge)) {
                 String authStatus = validator.getAuthStatus(jwt);
                 // TODO: Change Successful to Allowed
-                if(authStatus.equals("SUCCESSFUL")) {
+                if (authStatus.equals("SUCCESSFUL")) {
                     authenticationContext.setSubject(user);
-                } else if(authStatus.equals("DENIED")) {
+                } else if (authStatus.equals("DENIED")) {
                     httpServletResponse.sendRedirect(
                             "/authenticationendpoint/retry.do?status=Authentication Denied!"
                                     + "&statusMsg=Authentication was denied from the mobile app"
@@ -308,8 +307,18 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         return configProperties;
     }
 
+    /**
+     * Send the authentication request to the mobile app using FCM
+     *
+     * @param request  HTTP Request
+     * @param response HTTP Response
+     * @param deviceId Device ID of the authenticating device
+     * @param key      Session Data Key
+     * @throws IOException
+     */
     public void sendRequest(HttpServletRequest request, HttpServletResponse response,
                             String deviceId, String key) throws IOException {
+
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         Device device = null;
         try {
@@ -332,11 +341,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         String fcmUrl = authenticatorProperties.get(PushAuthenticatorConstants.FCM_URL);
         String hostname = request.getRemoteAddr();
 
-
         String serviceProviderName = context.getServiceProviderName();
 
-        String message = username + " is trying to log into " + serviceProviderName + " at " + hostname;
-        // TODO: Use a better message for the push notification
+        String message = username + " is requesting to log into " + serviceProviderName;
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
@@ -357,7 +364,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         String fullName =
                 userClaims.get(PushAuthenticatorConstants.FIRST_NAME_CLAIM) + " " +
-                userClaims.get(PushAuthenticatorConstants.LAST_NAME_CLAIM);
+                        userClaims.get(PushAuthenticatorConstants.LAST_NAME_CLAIM);
         String organization = user.getTenantDomain();
 
         String userAgentString = request.getHeader("user-agent");
@@ -366,7 +373,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         String userOS = uaClient.os.family;
         String userBrowser = uaClient.userAgent.family;
-
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
@@ -390,12 +396,21 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
     }
 
+    /**
+     * Validate the signature using the JWT received from mobile app
+     *
+     * @param jwt       JWT generated from mobile app
+     * @param challenge Challenge stored in cache to correlate with JWT
+     * @return Boolean for validity of the signature
+     * @throws IOException
+     * @throws SQLException
+     */
     private boolean validateSignature(String jwt, String challenge)
             throws IOException, SQLException {
+
         boolean isValid = false;
         DeviceHandler handler = new DeviceHandlerImpl();
 
-        // TODO: move public key retrieval to validator
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
         String publicKeyStr = handler.getPublicKey(deviceId);
@@ -409,6 +424,14 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         return isValid;
     }
 
+    /**
+     * Get the user claim values for required fields
+     *
+     * @param authenticatedUser Authenticated user
+     * @param context           Authentication context
+     * @return Retrieved user claims
+     * @throws AuthenticationFailedException
+     */
     private Map<String, String> getUserClaimValues(
             AuthenticatedUser authenticatedUser, AuthenticationContext context)
             throws AuthenticationFailedException {
@@ -454,6 +477,5 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         }
         return userRealm;
     }
-
 
 }

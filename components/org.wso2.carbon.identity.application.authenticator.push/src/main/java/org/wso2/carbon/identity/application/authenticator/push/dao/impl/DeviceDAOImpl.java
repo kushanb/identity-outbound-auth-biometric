@@ -20,6 +20,7 @@
 package org.wso2.carbon.identity.application.authenticator.push.dao.impl;
 
 import org.wso2.carbon.identity.application.authenticator.push.dao.DeviceDAO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

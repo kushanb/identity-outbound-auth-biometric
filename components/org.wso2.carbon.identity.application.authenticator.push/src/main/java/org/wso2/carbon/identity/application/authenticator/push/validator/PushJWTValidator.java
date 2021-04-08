@@ -25,31 +25,31 @@ public class PushJWTValidator {
     /**
      * Validate JWT
      *
-     * @param code
+     * @param jwt
      * @param publicKey
      * @param challenge
      * @return
      * @throws IdentityPushException
      */
-    public boolean validate(String code, String publicKey, String challenge)
+    public boolean validate(String jwt, String publicKey, String challenge)
             throws IdentityPushException {
 
-        if (!isJWT(code)) {
+        if (!isJWT(jwt)) {
             return false;
         }
 
         try {
-            SignedJWT signedJWT = SignedJWT.parse(code);
+            SignedJWT signedJWT = SignedJWT.parse(jwt);
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
             if (claimsSet == null) {
-                throw new IdentityPushException("Claim values are empty in the given code.");
+                throw new IdentityPushException("Claim values are empty in the given jwt.");
             }
             // JWT Signature validation
             if (!validateSignature(publicKey, signedJWT)) {
                 return false;
             } else {
                 // Challenge correlation validation
-                if(!claimsSet.getClaim("chg").equals(challenge)) {
+                if (!claimsSet.getClaim("chg").equals(challenge)) {
                     return false;
                 }
             }
@@ -58,9 +58,11 @@ public class PushJWTValidator {
                 return false;
             }
             // Validation of active time
-            checkNotBeforeTime(claimsSet.getNotBeforeTime());
+            if (!checkNotBeforeTime(claimsSet.getNotBeforeTime())) {
+                return false;
+            }
         } catch (ParseException e) {
-            throw new IdentityPushException("Error while validating code", e);
+            throw new IdentityPushException("Error while validating jwt", e);
         }
         return true;
     }
@@ -73,6 +75,7 @@ public class PushJWTValidator {
      * @return
      */
     public static boolean validateSignature(String publicKeyStr, SignedJWT signedJWT) {
+
         try {
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
@@ -88,13 +91,14 @@ public class PushJWTValidator {
     }
 
     public String getJWTClaim(String jwt, String claim) {
+
         try {
-            if(!isJWT(jwt)){
+            if (!isJWT(jwt)) {
                 return null;
             } else {
                 SignedJWT signedJWT = SignedJWT.parse(jwt);
                 JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-                if(claimSet != null) {
+                if (claimSet != null) {
                     return (String) claimSet.getClaim(claim);
                 } else {
                     return null;
@@ -107,14 +111,17 @@ public class PushJWTValidator {
     }
 
     public String getDeviceId(String jwt) {
-        return getJWTClaim(jwt,"did");
+
+        return getJWTClaim(jwt, "did");
     }
 
     public String getSessionDataKey(String jwt) {
+
         return getJWTClaim(jwt, "sid");
     }
 
     public String getAuthStatus(String jwt) {
+
         return getJWTClaim(jwt, "res");
     }
 
@@ -124,22 +131,20 @@ public class PushJWTValidator {
         long expirationTimeInMillis = expirationTime.getTime();
         long currentTimeInMillis = System.currentTimeMillis();
         if ((currentTimeInMillis + timeStampSkewMillis) > expirationTimeInMillis) {
-
             return false;
         }
 
         return true;
     }
 
-    private boolean checkNotBeforeTime(Date notBeforeTime) throws IdentityPushException {
+    private boolean checkNotBeforeTime(Date notBeforeTime) {
 
         if (notBeforeTime != null) {
             long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
             long notBeforeTimeMillis = notBeforeTime.getTime();
             long currentTimeInMillis = System.currentTimeMillis();
             if (currentTimeInMillis + timeStampSkewMillis < notBeforeTimeMillis) {
-
-                throw new IdentityPushException("Token is used before Not_Before_Time.");
+                return false;
             }
 
         }

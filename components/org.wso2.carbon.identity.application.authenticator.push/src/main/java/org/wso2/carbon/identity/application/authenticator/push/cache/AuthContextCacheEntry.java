@@ -22,13 +22,16 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Aut
 import org.wso2.carbon.identity.application.common.cache.CacheEntry;
 
 public class AuthContextCacheEntry extends CacheEntry {
+
     private AuthenticationContext authenticationContext;
 
     public AuthContextCacheEntry(AuthenticationContext authenticationContext) {
+
         this.authenticationContext = authenticationContext;
     }
 
     public AuthenticationContext getAuthenticationContext() {
+
         return authenticationContext;
     }
 }

@@ -27,15 +27,19 @@ public class AuthContextCache extends
 
     private static final String AUTH_CONTEXT_CACHE_NAME = "AuthContextCache";
     private static volatile AuthContextCache cache;
+
     public AuthContextCache(String cacheName) {
+
         super(cacheName);
     }
 
     public AuthContextCache() {
+
         super(AUTH_CONTEXT_CACHE_NAME, true);
     }
 
     public static AuthContextCache getInstance() {
+
         CarbonUtils.checkSecurity();
         if (cache == null) {
             synchronized (AuthContextCache.class) {
@@ -46,25 +50,30 @@ public class AuthContextCache extends
     }
 
     private void storeToSessionStore(String id, AuthContextCacheEntry entry) {
+
         SessionDataStore.getInstance().storeSessionData(id, AUTH_CONTEXT_CACHE_NAME, entry);
     }
 
     private AuthContextCacheEntry getFromSessionStore(String id) {
+
         return (AuthContextCacheEntry) SessionDataStore.getInstance().
                 getSessionData(id, AUTH_CONTEXT_CACHE_NAME);
     }
 
     private void clearFromSessionStore(String id) {
+
         SessionDataStore.getInstance().clearSessionData(id, AUTH_CONTEXT_CACHE_NAME);
     }
 
     public void clearCacheEntryByRequestId(AuthContextcacheKey key) {
+
         super.clearCacheEntry(key);
         clearFromSessionStore(key.getRequestId());
     }
 
     public void addToCacheByRequestId(AuthContextcacheKey key,
                                       AuthContextCacheEntry entry) {
+
         super.addToCache(key, entry);
         storeToSessionStore(key.getRequestId(), entry);
 

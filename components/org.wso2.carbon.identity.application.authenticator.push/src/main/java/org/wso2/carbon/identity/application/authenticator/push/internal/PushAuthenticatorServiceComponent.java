@@ -36,8 +36,8 @@ import java.util.Hashtable;
         name = "identity.application.authenticator.push.component",
         immediate = true)
 public class PushAuthenticatorServiceComponent {
-    private static RealmService realmService;
 
+    private static RealmService realmService;
 
     private static Log log = LogFactory.getLog(PushAuthenticatorServiceComponent.class);
 
@@ -74,14 +74,17 @@ public class PushAuthenticatorServiceComponent {
             unbind = "unsetRealmService"
     )
     protected void setRealmService(RealmService realmService) {
+
         this.realmService = realmService;
     }
 
     protected void unsetRealmService(RealmService realmService) {
+
         this.realmService = null;
     }
 
     public static RealmService getRealmService() {
+
         return realmService;
     }
 }
